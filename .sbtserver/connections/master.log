@@ -1,0 +1,10 @@
+New log file opened at Tue May 31 00:29:22 CLT 2016 by 14201@tomas-MS-7636
+Taking next connection to: 53338
+New client attempting to connect on port: 58805-53338
+  Address = /127.0.1.1:53338
+This client on port 58805 has uuid a725c141-6468-4a25-8543-8d2501f6e421 configName activator humanReadableName Activator protocolVersion 3 featureTags Vector()
+Connected Clients: activator-a725c141-6468-4a25-8543-8d2501f6e421
+Taking next connection to: 53338
+Checking to see if clients are empty...
+We have 1 non-daemon clients, continuing serving connections.
+Taking next connection to: 53338
