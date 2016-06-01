@@ -67,4 +67,24 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
 
     val detalleVentaQ = TableQuery[DetalleVentaTable]
 
+    class CompraTable(tag: Tag) extends BaseTable[Compra](tag, "Compra"){
+        def fecha = column[java.sql.Timestamp]("fecha")
+
+        def * = (id, fecha) <> (Compra.tupled, Compra.unapply _)
+    }
+
+    val compraQ = TableQuery[CompraTable]
+
+    class DetalleCompraTable(tag: Tag) extends BaseTable[DetalleCompra](tag, "DetalleCompra"){
+        def compraId = column[Int]("compra_id")
+        def productoId = column[Int]("producto_id")
+        def paquetes = column[Int]("paquetes")
+        def unidadesPorPaquete = column[Int]("unidades_paquete")
+        def precioPorPaquete = column[Int]("precio_paquete")
+
+        def * = (id, compraId, productoId, paquetes, unidadesPorPaquete, precioPorPaquete) <> (DetalleCompra.tupled, DetalleCompra.unapply _)
+    }
+
+    val detalleCompraQ = TableQuery[DetalleCompraTable]
+
 }
