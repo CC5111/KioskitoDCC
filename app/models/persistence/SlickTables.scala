@@ -42,6 +42,8 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
         def fecha = column[java.sql.Timestamp]("fecha")
         def cantidad = column[Int]("cantidad")
 
+        def productoFK = foreignKey("producto_fk", productoId, productQ)(_.id)
+
         def * = (id, productQ, fecha, cantidad) <> (Stock.tupled, Stock.unapply _)
     }
 
@@ -62,6 +64,9 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
         def cantidadVendida = column[Int]("cantidad_vendida")
         def precioDeVenta = column[Int]("precio_venta")
 
+        def ventaFK = foreignKey("venta_fk", ventaId, ventaQ)(_.id)
+        def productoFK = foreignKey("producto_fk", productoId, productQ)(_.id)
+
         def * = (id, ventaId, productoId, cantidadVendida, precioDeVenta) <> (DetalleVenta.tupled, DetalleVenta.unapply _)
     }
 
@@ -81,6 +86,9 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
         def paquetes = column[Int]("paquetes")
         def unidadesPorPaquete = column[Int]("unidades_paquete")
         def precioPorPaquete = column[Int]("precio_paquete")
+
+        def compraFK = foreignKey("compra_fk", compraId, compraQ)(_.id)
+        def productoFK = foreignKey("producto_fk", productoId, productQ)(_.id)
 
         def * = (id, compraId, productoId, paquetes, unidadesPorPaquete, precioPorPaquete) <> (DetalleCompra.tupled, DetalleCompra.unapply _)
     }
