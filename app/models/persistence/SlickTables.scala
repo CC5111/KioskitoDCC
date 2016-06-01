@@ -46,4 +46,14 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
     }
 
     val stockQ = TableQuery[StockTable]
+
+    class VentaTable(tag: Tag) extends BaseTable[Venta](tag, "Venta"){
+        def fechaInicio = column[java.sql.Timestamp]("fecha_inicio")
+        def fechaFin = column[java.sql.Timestamp]("fecha_fin")
+
+        def * = (id, fechaInicio, fechaFin) <> (Venta.tupled, Venta.unapply _)
+    }
+
+    val ventaQ = TableQuery[VentaTable]
+
 }
