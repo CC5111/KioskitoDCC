@@ -1,18 +1,28 @@
-@(products: List[models.entities.Producto])
+@(products: List[models.entities.Producto], form: Form[models.entities.Producto])(implicit msg: play.api.i18n.Messages)
 
 
+@main("Productos") {
+    <h1>PRODUCTOS</h1>
+    <table class="table table-striped">
+        <thead>
+            <th>Nombre</th>
+        </thead>
+        <tbody>
+        @for(product <- products) {
+            <tr>
+                <td>@product.producto</td>
+            </tr>
+        }
+        </tbody>
+    </table>
 
-  <h1>PRODUCTOS</h1>
-  <table class="table table-striped">
-    <thead>
-      <th>Nombre</th>
-    </thead>
-    <tbody>
-    @for(product <- products) {
-      <tr>
-        <td>@product.producto</td>
-      </tr>
+
+    <h2>Crear Room</h2>
+    @helper.form(action = routes.ProductsController.createProduct()) {
+        <input type="hidden" value="0" name="id" />
+        @helper.inputText(form("producto"))
+        @helper.inputText(form("precio_actual"))
+        @helper.inputText(form("calorias"))
+        <button type="submit" class="btn btn-primary">Crear!</button>
     }
-    </tbody>
-  </table>
-
+}
