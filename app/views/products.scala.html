@@ -1,0 +1,18 @@
+@(products: List[models.entities.Producto])(implicit msg: play.api.i18n.Messages)
+
+
+
+  <h1>PRODUCTOS</h1>
+  <table class="table table-striped">
+    <thead>
+      <th>Nombre</th>
+    </thead>
+    <tbody>
+    @for(product <- products) {
+      <tr>
+        <td>@product.producto</td>
+      </tr>
+    }
+    </tbody>
+  </table>
+
