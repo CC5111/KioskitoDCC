@@ -28,12 +28,10 @@ trait AbstractBaseDAO[T,A] {
 }
 
 @Singleton
-class ProductDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider){
-    val dbConfig = dbConfigProvider.get[JdbcProfile]
+class ProductDAO extends BaseDAO[ProductoTable, Producto]{
     import dbConfig.driver.api._
-    import dbConfig.db
 
-    protected val tableQ: TableQuery[ProductoTable] = SlickTables.productQ
+    override protected val tableQ = SlickTables.productQ
 
     def all: Future[Seq[Producto]] = {
         db.run(tableQ.result)
