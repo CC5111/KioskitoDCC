@@ -28,7 +28,7 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
   val suppliersTableQ : TableQuery[SuppliersTable] = TableQuery[SuppliersTable]
 
   class ProductoTable(tag: Tag) extends BaseTable[Producto](tag, "Producto"){
-      def producto = column[String]("Nombre")
+      def producto = column[String]("producto")
       def precioActual = column[Int]("precio_actual")
       def calorias = column[Int]("calorias")
 
@@ -44,7 +44,7 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
 
         def productoFK = foreignKey("producto_fk", productoId, productQ)(_.id)
 
-        def * = (id, productQ, fecha, cantidad) <> (Stock.tupled, Stock.unapply _)
+        def * = (id, productoId, fecha, cantidad) <> (Stock.tupled, Stock.unapply _)
     }
 
     val stockQ = TableQuery[StockTable]
