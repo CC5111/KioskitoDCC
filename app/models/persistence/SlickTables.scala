@@ -1,6 +1,6 @@
 package models.persistence
 
-import models.entities.Supplier
+import models.entities._
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.driver.JdbcProfile
@@ -26,5 +26,15 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
   }
 
   val suppliersTableQ : TableQuery[SuppliersTable] = TableQuery[SuppliersTable]
+
+  class ProductoTable(tag: Tag) extends BaseTable[Producto](tag, "Producto"){
+      def producto = column[String]("Nombre")
+      def precioActual = column[Int]("precio_actual")
+      def calorias = column[Int]("calorias")
+
+      def * = (id, producto, precioActual, calorias) <> (Producto.tupled, Producto.unapply _)
+  }
+
+    val productQ = TableQuery[ProductoTable]
 
 }
