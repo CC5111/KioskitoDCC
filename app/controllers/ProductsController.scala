@@ -1,8 +1,16 @@
 package controllers
+import play.api.mvc._
+import models.daos._
+import javax.inject.{Inject, Singleton}
 
-import javax.inject.Singleton
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class ProductsController {
-    def products() = play.mvc.Results.TODO
+class ProductsController @Inject()(productDAO: ProductDAO)(implicit ec: ExecutionContext) extends Controller{
+    def products() = Action.async{ implicit request =>
+        productDAO.all.map{ products =>
+            Ok(views.html.products(List()))
+        }
+    }
+
 }
