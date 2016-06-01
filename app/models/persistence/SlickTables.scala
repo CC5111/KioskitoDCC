@@ -56,4 +56,15 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
 
     val ventaQ = TableQuery[VentaTable]
 
+    class DetalleVentaTable(tag: Tag) extends BaseTable[DetalleVenta](tag, "DetalleVenta"){
+        def ventaId = column[Int]("venta_id")
+        def productoId = column[Int]("producto_id")
+        def cantidadVendida = column[Int]("cantidad_vendida")
+        def precioDeVenta = column[Int]("precio_venta")
+
+        def * = (id, ventaId, productoId, cantidadVendida, precioDeVenta) <> (DetalleVenta.tupled, DetalleVenta.unapply _)
+    }
+
+    val detalleVentaQ = TableQuery[DetalleVentaTable]
+
 }
