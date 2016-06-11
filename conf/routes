@@ -5,7 +5,7 @@
 GET     /productos                  controllers.ProductsController.products
 POST    /create                     controllers.ProductsController.createProduct
 
-GET     /conteos                    controllers.PeriodsController.periods
+GET     /compras                    controllers.PeriodsController.periods
 # An example controller showing how to write asynchronous code
 GET     /supplier/:id                 controllers.SuppliersController.supplier(id : Long)
 POST    /supplier                    controllers.SuppliersController.insertSupplier
