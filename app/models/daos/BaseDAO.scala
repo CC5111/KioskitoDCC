@@ -4,7 +4,7 @@ import javax.inject.{Inject, Singleton}
 
 import models.entities.{BaseEntity, Supplier}
 import models.persistence.SlickTables
-import models.persistence.SlickTables.{BaseTable, ProductTable, SuppliersTable}
+import models.persistence.SlickTables.{BaseTable, PeriodTable, ProductTable, SuppliersTable}
 import models.entities._
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
@@ -36,6 +36,17 @@ class ProductDAO extends BaseDAO[ProductTable, Product]{
     def all: Future[Seq[Product]] = {
         db.run(tableQ.result)
     }
+}
+
+@Singleton
+class PeriodDAO extends BaseDAO[PeriodTable, Period]{
+  import dbConfig.driver.api._
+
+  override protected val tableQ = SlickTables.periodQ
+
+  def all: Future[Seq[Period]] = {
+    db.run(tableQ.result)
+  }
 }
 
 abstract class BaseDAO[T <: BaseTable[A], A <: BaseEntity]() extends AbstractBaseDAO[T,A] with HasDatabaseConfig[JdbcProfile] {
