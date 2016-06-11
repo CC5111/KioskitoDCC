@@ -2,6 +2,9 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+GET     /productos                  controllers.ProductsController.products
+POST    /create                     controllers.ProductsController.createProduct
+
 # An example controller showing how to write asynchronous code
 GET     /supplier/:id                 controllers.SuppliersController.supplier(id : Long)
 POST    /supplier                    controllers.SuppliersController.insertSupplier
