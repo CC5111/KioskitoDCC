@@ -37,4 +37,39 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
 
     val productQ = TableQuery[ProductoTable]
 
+    class PeriodTable(tag: Tag) extends BaseTable[Period](tag, "Period"){
+        def startingDate = column[java.sql.Timestamp]("starting_date")
+        def endDate = column[java.sql.Timestamp]("end_date")
+        def earnings = column[Int]("earnings")
+
+        def * = (id, startingDate, endDate, earnings) <> (Period.tupled, Period.unapply _)
+    }
+
+    val periodQ = TableQuery[PeriodTable]
+
+
+    class ProductDetailByPeriodTable(tag: Tag) extends BaseTable[ProductDetailByPeriod](tag, "ProductDetailByPeriod"){
+        def productId = column[Long]("product_id")
+        def periodId = column[Long]("period_id")
+        def numberOfPackages = column[Int]("number_of_packages")
+        def quantityByPackage = column[Int]("quantity_by_package")
+        def buyingPrice = column[Int]("buying_price")
+        def sellingPrice = column[Int]("selling_price")
+
+        def * = (id, productId, periodId, numberOfPackages, quantityByPackage, buyingPrice, sellingPrice) <> (ProductDetailByPeriod.tupled, ProductDetailByPeriod.unapply _)
+    }
+
+    val productDetailByPeriodQ = TableQuery[ProductDetailByPeriodTable]
+
+
+    class CountTable(tag: Tag) extends BaseTable[Count](tag, "Count"){
+        def productId = column[Long]("product_id")
+        def periodId = column[Long]("period_id")
+        def remainingQuantity = column[Int]("remaining_quantity")
+        def date = column[java.sql.Timestamp]("date")
+
+        def * = (id, periodId, productId, remainingQuantity, date) <> (Count.tupled, Count.unapply _)
+    }
+
+    val countQ = TableQuery[CountTable]
 }
