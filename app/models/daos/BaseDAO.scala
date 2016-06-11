@@ -60,6 +60,17 @@ class CountDAO extends BaseDAO[CountTable, Count]{
   }
 }
 
+@Singleton
+class ProductDetailByPeriodDAO extends BaseDAO[ProductDetailByPeriodTable, ProductDetailByPeriod]{
+    import dbConfig.driver.api._
+
+    override protected val tableQ = SlickTables.productDetailByPeriodQ
+
+    def all: Future[Seq[ProductDetailByPeriod]] = {
+        db.run(tableQ.result)
+    }
+}
+
 abstract class BaseDAO[T <: BaseTable[A], A <: BaseEntity]() extends AbstractBaseDAO[T,A] with HasDatabaseConfig[JdbcProfile] {
   protected lazy val dbConfig: DatabaseConfig[JdbcProfile] = DatabaseConfigProvider.get[JdbcProfile](Play.current)
   import dbConfig.driver.api._
