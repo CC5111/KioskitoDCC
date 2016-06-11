@@ -3,7 +3,7 @@ import play.api.mvc._
 import models.daos._
 import javax.inject.{Inject, Singleton}
 
-import models.entities.Producto
+import models.entities.Product
 import play.api.data._
 import play.api.data.Forms._
 import play.api.Play.current
@@ -19,9 +19,8 @@ class ProductsController @Inject()(productDAO: ProductDAO)(implicit ec: Executio
         mapping(
             "id" -> longNumber,
             "producto" -> nonEmptyText,
-            "precio_actual" -> number,
             "calorias" -> number
-        )(Producto.apply)(Producto.unapply)
+        )(Product.apply)(Product.unapply)
     )
 
     def products = Action.async{ implicit request =>

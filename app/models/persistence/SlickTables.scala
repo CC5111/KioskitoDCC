@@ -27,15 +27,14 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
 
   val suppliersTableQ : TableQuery[SuppliersTable] = TableQuery[SuppliersTable]
 
-  class ProductoTable(tag: Tag) extends BaseTable[Product](tag, "Product"){
-      def producto = column[String]("producto")
-      def precioActual = column[Int]("precio_actual")
-      def calorias = column[Int]("calorias")
+  class ProductTable(tag: Tag) extends BaseTable[Product](tag, "Product"){
+      def product = column[String]("product")
+      def calories = column[Int]("calories")
 
-      def * = (id, producto, precioActual, calorias) <> (Product.tupled, Product.unapply _)
+      def * = (id, product, calories) <> (Product.tupled, Product.unapply _)
   }
 
-    val productQ = TableQuery[ProductoTable]
+    val productQ = TableQuery[ProductTable]
 
     class PeriodTable(tag: Tag) extends BaseTable[Period](tag, "Period"){
         def startingDate = column[java.sql.Timestamp]("starting_date")

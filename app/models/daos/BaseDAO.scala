@@ -4,7 +4,7 @@ import javax.inject.{Inject, Singleton}
 
 import models.entities.{BaseEntity, Supplier}
 import models.persistence.SlickTables
-import models.persistence.SlickTables.{BaseTable, ProductoTable, SuppliersTable}
+import models.persistence.SlickTables.{BaseTable, ProductTable, SuppliersTable}
 import models.entities._
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
@@ -28,12 +28,12 @@ trait AbstractBaseDAO[T,A] {
 }
 
 @Singleton
-class ProductDAO extends BaseDAO[ProductoTable, Producto]{
+class ProductDAO extends BaseDAO[ProductTable, Product]{
     import dbConfig.driver.api._
 
     override protected val tableQ = SlickTables.productQ
 
-    def all: Future[Seq[Producto]] = {
+    def all: Future[Seq[Product]] = {
         db.run(tableQ.result)
     }
 }
