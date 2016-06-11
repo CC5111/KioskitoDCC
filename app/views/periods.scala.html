@@ -1,0 +1,21 @@
+@(periods: List[models.entities.Period])(implicit msg: play.api.i18n.Messages)
+
+
+@main("Compras") {
+  <h1>PRODUCTOS</h1>
+  <table class="table table-striped">
+    <thead>
+      <th>Compra</th>
+      <th>Gasto</th>
+    </thead>
+    <tbody>
+    @for(period <- periods) {
+      <tr>
+        <td>@period.startingDate</td>
+        <td>@period.earnings</td>
+      </tr>
+    }
+    </tbody>
+  </table>
+
+}
