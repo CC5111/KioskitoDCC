@@ -27,72 +27,48 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
 
   val suppliersTableQ : TableQuery[SuppliersTable] = TableQuery[SuppliersTable]
 
-  class ProductoTable(tag: Tag) extends BaseTable[Producto](tag, "Producto"){
-      def producto = column[String]("producto")
-      def precioActual = column[Int]("precio_actual")
-      def calorias = column[Int]("calorias")
+  class ProductTable(tag: Tag) extends BaseTable[Product](tag, "Product"){
+      def product = column[String]("product")
+      def calories = column[Int]("calories")
 
-      def * = (id, producto, precioActual, calorias) <> (Producto.tupled, Producto.unapply _)
+      def * = (id, product, calories) <> (Product.tupled, Product.unapply _)
   }
 
-    val productQ = TableQuery[ProductoTable]
+    val productQ = TableQuery[ProductTable]
 
-    class StockTable(tag: Tag) extends BaseTable[Stock](tag, "Stock"){
-        def productoId = column[Long]("producto_id")
-        def fecha = column[java.sql.Timestamp]("fecha")
-        def cantidad = column[Int]("cantidad")
+    class PeriodTable(tag: Tag) extends BaseTable[Period](tag, "Period"){
+        def startingDate = column[java.sql.Timestamp]("starting_date")
+        def endDate = column[java.sql.Timestamp]("end_date")
+        def earnings = column[Int]("earnings")
 
-        def productoFK = foreignKey("producto_fk", productoId, productQ)(_.id)
-
-        def * = (id, productoId, fecha, cantidad) <> (Stock.tupled, Stock.unapply _)
+        def * = (id, startingDate, endDate, earnings) <> (Period.tupled, Period.unapply _)
     }
 
-    val stockQ = TableQuery[StockTable]
+    val periodQ = TableQuery[PeriodTable]
 
-    class VentaTable(tag: Tag) extends BaseTable[Venta](tag, "Venta"){
-        def fechaInicio = column[java.sql.Timestamp]("fecha_inicio")
-        def fechaFin = column[java.sql.Timestamp]("fecha_fin")
 
-        def * = (id, fechaInicio, fechaFin) <> (Venta.tupled, Venta.unapply _)
+    class ProductDetailByPeriodTable(tag: Tag) extends BaseTable[ProductDetailByPeriod](tag, "ProductDetailByPeriod"){
+        def productId = column[Long]("product_id")
+        def periodId = column[Long]("period_id")
+        def numberOfPackages = column[Int]("number_of_packages")
+        def quantityByPackage = column[Int]("quantity_by_package")
+        def buyingPrice = column[Int]("buying_price")
+        def sellingPrice = column[Int]("selling_price")
+
+        def * = (id, productId, periodId, numberOfPackages, quantityByPackage, buyingPrice, sellingPrice) <> (ProductDetailByPeriod.tupled, ProductDetailByPeriod.unapply _)
     }
 
-    val ventaQ = TableQuery[VentaTable]
+    val productDetailByPeriodQ = TableQuery[ProductDetailByPeriodTable]
 
-    class DetalleVentaTable(tag: Tag) extends BaseTable[DetalleVenta](tag, "DetalleVenta"){
-        def ventaId = column[Long]("venta_id")
-        def productoId = column[Long]("producto_id")
-        def cantidadVendida = column[Int]("cantidad_vendida")
-        def precioDeVenta = column[Int]("precio_venta")
 
-        def ventaFK = foreignKey("venta_fk", ventaId, ventaQ)(_.id)
-        def productoFK = foreignKey("producto_fk", productoId, productQ)(_.id)
+    class CountTable(tag: Tag) extends BaseTable[Count](tag, "Count"){
+        def productId = column[Long]("product_id")
+        def periodId = column[Long]("period_id")
+        def remainingQuantity = column[Int]("remaining_quantity")
+        def date = column[java.sql.Timestamp]("date")
 
-        def * = (id, ventaId, productoId, cantidadVendida, precioDeVenta) <> (DetalleVenta.tupled, DetalleVenta.unapply _)
+        def * = (id, periodId, productId, remainingQuantity, date) <> (Count.tupled, Count.unapply _)
     }
 
-    val detalleVentaQ = TableQuery[DetalleVentaTable]
-
-    class CompraTable(tag: Tag) extends BaseTable[Compra](tag, "Compra"){
-        def fecha = column[java.sql.Timestamp]("fecha")
-
-        def * = (id, fecha) <> (Compra.tupled, Compra.unapply _)
-    }
-
-    val compraQ = TableQuery[CompraTable]
-
-    class DetalleCompraTable(tag: Tag) extends BaseTable[DetalleCompra](tag, "DetalleCompra"){
-        def compraId = column[Long]("compra_id")
-        def productoId = column[Long]("producto_id")
-        def paquetes = column[Int]("paquetes")
-        def unidadesPorPaquete = column[Int]("unidades_paquete")
-        def precioPorPaquete = column[Int]("precio_paquete")
-
-        def compraFK = foreignKey("compra_fk", compraId, compraQ)(_.id)
-        def productoFK = foreignKey("producto_fk", productoId, productQ)(_.id)
-
-        def * = (id, compraId, productoId, paquetes, unidadesPorPaquete, precioPorPaquete) <> (DetalleCompra.tupled, DetalleCompra.unapply _)
-    }
-
-    val detalleCompraQ = TableQuery[DetalleCompraTable]
-
+    val countQ = TableQuery[CountTable]
 }

@@ -1,13 +1,17 @@
 package models.daos
 
-import models.entities.{Supplier, BaseEntity}
+import javax.inject.{Inject, Singleton}
+
+import models.entities.{BaseEntity, Supplier}
 import models.persistence.SlickTables
-import models.persistence.SlickTables.{SuppliersTable, BaseTable}
+import models.persistence.SlickTables._
+import models.entities._
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
-import slick.lifted.{CanBeQueryCondition}
+import slick.lifted.CanBeQueryCondition
+
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
@@ -23,6 +27,49 @@ trait AbstractBaseDAO[T,A] {
   def deleteByFilter[C : CanBeQueryCondition](f:  (T) => C): Future[Int]
 }
 
+@Singleton
+class ProductDAO extends BaseDAO[ProductTable, Product]{
+    import dbConfig.driver.api._
+
+    override protected val tableQ = SlickTables.productQ
+
+    def all: Future[Seq[Product]] = {
+        db.run(tableQ.result)
+    }
+}
+
+@Singleton
+class PeriodDAO extends BaseDAO[PeriodTable, Period]{
+  import dbConfig.driver.api._
+
+  override protected val tableQ = SlickTables.periodQ
+
+  def all: Future[Seq[Period]] = {
+    db.run(tableQ.result)
+  }
+}
+
+@Singleton
+class CountDAO extends BaseDAO[CountTable, Count]{
+  import dbConfig.driver.api._
+
+  override protected val tableQ = SlickTables.countQ
+
+  def all: Future[Seq[Count]] = {
+    db.run(tableQ.result)
+  }
+}
+
+@Singleton
+class ProductDetailByPeriodDAO extends BaseDAO[ProductDetailByPeriodTable, ProductDetailByPeriod]{
+    import dbConfig.driver.api._
+
+    override protected val tableQ = SlickTables.productDetailByPeriodQ
+
+    def all: Future[Seq[ProductDetailByPeriod]] = {
+        db.run(tableQ.result)
+    }
+}
 
 abstract class BaseDAO[T <: BaseTable[A], A <: BaseEntity]() extends AbstractBaseDAO[T,A] with HasDatabaseConfig[JdbcProfile] {
   protected lazy val dbConfig: DatabaseConfig[JdbcProfile] = DatabaseConfigProvider.get[JdbcProfile](Play.current)
