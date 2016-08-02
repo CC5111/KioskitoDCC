@@ -1,4 +1,4 @@
-@(periods: List[models.entities.Period])(implicit msg: play.api.i18n.Messages)
+@(periods: List[(java.sql.Timestamp, Option[Int])])(implicit msg: play.api.i18n.Messages)
 
 
 @main("Compras") {
@@ -11,8 +11,8 @@
     <tbody>
     @for(period <- periods) {
       <tr>
-        <td>@period.startingDate</td>
-        <td>@period.earnings</td>
+        <td>@period._1</td>
+        <td>@period._2</td>
       </tr>
     }
     </tbody>

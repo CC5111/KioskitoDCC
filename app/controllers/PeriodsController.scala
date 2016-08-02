@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext
 class PeriodsController @Inject()(periodDAO: PeriodDAO)(implicit ec: ExecutionContext) extends Controller{
 
     def periods() = Action.async{ implicit request =>
-        periodDAO.all.map{ periods =>
+        periodDAO.getPeriodsTotalCost.map{ periods =>
             Ok(views.html.periods(periods.toList))
         }
     }

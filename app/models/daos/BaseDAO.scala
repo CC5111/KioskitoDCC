@@ -1,5 +1,6 @@
 package models.daos
 
+import java.sql.Timestamp
 import javax.inject.{Inject, Singleton}
 
 import models.entities.{BaseEntity, Supplier}
@@ -47,6 +48,23 @@ class PeriodDAO extends BaseDAO[PeriodTable, Period]{
   def all: Future[Seq[Period]] = {
     db.run(tableQ.result)
   }
+
+
+    def getPeriodsTotalCost: Future[Seq[(java.sql.Timestamp, Option[Int])]] = {
+        val detailQ = SlickTables.productDetailByPeriodQ
+
+        val query = (for {
+            (period, detail) <- tableQ join detailQ on (_.id === _.periodId)
+        } yield (period.startingDate, detail.buyingPrice))
+            .groupBy(_._1).map {
+                case (date, pairs) => (date, pairs.map(_._2).sum)
+            }
+
+        println(query.result.statements: Iterable[String])
+        db.run(query.result)
+    }
+
+
 }
 
 @Singleton
