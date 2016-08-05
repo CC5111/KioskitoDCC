@@ -1,0 +1,11 @@
+@(currentReg: Int)(regs: Html)
+
+@main("Registros", 2) {
+    <ul class="nav nav-pills nav-justified">
+        <li role="presentation" class="@if(currentReg == 1) {active}"><a href="compras">Compras</a></li>
+        <li role="presentation" class="@if(currentReg == 2) {active}"><a href="conteos">Conteos</a></li>
+    </ul>
+    <div id="content" class="container">
+    @regs
+    </div>
+}

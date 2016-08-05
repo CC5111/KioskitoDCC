@@ -1,8 +1,8 @@
 @(periods: List[(java.sql.Timestamp, Option[Int])])(implicit msg: play.api.i18n.Messages)
 
 
-@main("Compras") {
-  <h1>PRODUCTOS</h1>
+@registers(1) {
+  <h1>Compras</h1>
   <table class="table table-striped">
     <thead>
       <th>Compra</th>
