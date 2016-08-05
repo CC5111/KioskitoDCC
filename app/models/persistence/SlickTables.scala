@@ -30,8 +30,9 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
   class ProductTable(tag: Tag) extends BaseTable[Product](tag, "Product"){
       def product = column[String]("product")
       def calories = column[Int]("calories")
+      def currentPrice = column[Int]("current_price")
 
-      def * = (id, product, calories) <> (Product.tupled, Product.unapply _)
+      def * = (id, product, currentPrice, calories) <> (Product.tupled, Product.unapply _)
   }
 
     val productQ = TableQuery[ProductTable]
