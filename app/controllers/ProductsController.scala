@@ -19,7 +19,8 @@ class ProductsController @Inject()(productDAO: ProductDAO)(implicit ec: Executio
         mapping(
             "id" -> longNumber,
             "producto" -> nonEmptyText,
-            "calorias" -> number
+            "calorias" -> number,
+            "precio actual" -> number
         )(Product.apply)(Product.unapply)
     )
 
