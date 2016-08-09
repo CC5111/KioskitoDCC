@@ -16,8 +16,8 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class CountsController @Inject()(countDAO: CountDAO)(implicit ec: ExecutionContext) extends Controller{
     def counts() = Action.async(implicit request =>
-        countDAO.all.map { counts =>
-            Ok(views.html.counts(List((new Timestamp(System.currentTimeMillis()), 2))))
+        countDAO.getCountsWithEarnings().map { counts =>
+            Ok(views.html.counts(counts.toList))
         }
     )
 }

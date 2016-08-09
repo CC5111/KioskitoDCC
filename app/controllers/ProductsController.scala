@@ -24,7 +24,8 @@ class ProductsController @Inject()(productDAO: ProductDAO)(implicit ec: Executio
             case (id, producto, calorias) => Product(id, producto, calorias, 0)
         })({
             case p: Product => Some((p.id, p.product, p.calories))
-        })
+        }
+        )
     )
 
     def products = Action.async{ implicit request =>

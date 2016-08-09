@@ -36,11 +36,15 @@
     <table class="table table-striped">
         <thead>
             <th>Nombre</th>
+            <th>Precio</th>
+            <th>Calorías</th>
         </thead>
         <tbody>
         @for(product <- products) {
             <tr>
                 <td>@product.product</td>
+                <td>@product.currentPrice</td>
+                <td>@product.calories</td>
             </tr>
         }
         </tbody>
