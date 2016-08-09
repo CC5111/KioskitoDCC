@@ -3,7 +3,7 @@ package models.daos
 import java.sql.Timestamp
 import javax.inject.{Inject, Singleton}
 
-import models.entities.{BaseEntity, Supplier}
+import models.entities.BaseEntity
 import models.persistence.SlickTables
 import models.persistence.SlickTables._
 import models.entities._
