@@ -21,7 +21,7 @@ class ProductsController @Inject()(productDAO: ProductDAO)(implicit ec: Executio
             "producto" -> nonEmptyText,
             "calorias" -> number
         )({
-            case (id, producto, calorias) => Product(id, producto, calorias, 0)
+            case (id, producto, calorias) => Product(id, producto, calorias, 0, 0)
         }
         )({
             case p : Product => Some((p.id, p.product, p.calories))

@@ -40,22 +40,22 @@ class ProductDAO extends BaseDAO[ProductTable, Product]{
 }
 
 @Singleton
-class PeriodDAO extends BaseDAO[PeriodTable, Period]{
+class PeriodDAO extends BaseDAO[PurchaseTable, Purchase]{
   import dbConfig.driver.api._
 
-  override protected val tableQ = SlickTables.periodQ
+  override protected val tableQ = SlickTables.purchaseQ
 
-  def all: Future[Seq[Period]] = {
+  def all: Future[Seq[Purchase]] = {
     db.run(tableQ.result)
   }
 
 
     def getPeriodsTotalCost: Future[Seq[(java.sql.Timestamp, Option[Int])]] = {
-        val detailQ = SlickTables.productDetailByPeriodQ
+        val detailQ = SlickTables.purchaseDetailQ
 
         val query = (for {
-            (period, detail) <- tableQ join detailQ on (_.id === _.periodId)
-        } yield (period.startingDate, detail.buyingPrice))
+            (period, detail) <- tableQ join detailQ on (_.id === _.purchaseId)
+        } yield (period.date, detail.pricePerPackage))
             .groupBy(_._1).map {
                 case (date, pairs) => (date, pairs.map(_._2).sum)
             }
@@ -68,42 +68,33 @@ class PeriodDAO extends BaseDAO[PeriodTable, Period]{
 }
 
 @Singleton
-class CountDAO extends BaseDAO[CountTable, Count]{
+class CountDAO extends BaseDAO[CountDetailByProductTable, CountDetailByProduct]{
   import dbConfig.driver.api._
 
-  override protected val tableQ = SlickTables.countQ
+  override protected val tableQ = SlickTables.countDetailQ
 
-  def all: Future[Seq[Count]] = {
+  def all: Future[Seq[CountDetailByProduct]] = {
     db.run(tableQ.result)
   }
 
-    def getCountsWithEarnings(): Future[Seq[(java.sql.Timestamp, Option[Int])]] = {
-        val detailQ = SlickTables.productDetailByPeriodQ
+    def getCountsWithEarnings(): Future[Seq[CountDetailByProduct]] = {
 
-        def calculateEarnings(x: (CountTable, ProductDetailByPeriodTable)): Rep[Int] = {
-            ((x._2.quantityByPackage * x._2.numberOfPackages) - x._1.remainingQuantity) * x._2.sellingPrice
-        }
-
-        val query = (for {
-            (count, detail) <- tableQ join detailQ on (_.periodId === _.periodId)
-        } yield (count, detail))
-            .groupBy(_._1.date).map {
-            case (date, countsAndDetails) =>
-                (date, countsAndDetails.map (x => calculateEarnings(x)).sum)
+        val query = tableQ.groupBy(_.countId).map {
+            case (id, countDetail) => ()
         }
 
         println(query.result.statements: Iterable[String])
-        db.run(query.result)
+        db.run(tableQ.result)
     }
 }
 
 @Singleton
-class ProductDetailByPeriodDAO extends BaseDAO[ProductDetailByPeriodTable, ProductDetailByPeriod]{
+class ProductDetailByPeriodDAO extends BaseDAO[PurchaseDetailByProductTable, PurchaseDetailByProduct]{
     import dbConfig.driver.api._
 
-    override protected val tableQ = SlickTables.productDetailByPeriodQ
+    override protected val tableQ = SlickTables.purchaseDetailQ
 
-    def all: Future[Seq[ProductDetailByPeriod]] = {
+    def all: Future[Seq[PurchaseDetailByProduct]] = {
         db.run(tableQ.result)
     }
 }
