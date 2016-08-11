@@ -70,4 +70,16 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
     }
 
     val countQ = TableQuery[CountTable]
+
+    class StockTable(tag: Tag) extends BaseTable[Stock](tag, "Stock") {
+        def productId = column[Long]("product_id")
+        def stock = column[Int]("stock")
+        def date = column[java.sql.Timestamp]("date")
+
+        def * = (id, productId, stock, date) <> (Stock.tupled, Stock.unapply _)
+    }
+
+    val stockQ = TableQuery[StockTable]
 }
+
+

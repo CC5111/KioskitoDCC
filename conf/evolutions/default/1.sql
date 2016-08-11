@@ -33,12 +33,23 @@ create table "PurchaseDetailByProduct" (
     "quantity_by_package" INTEGER,
     "price_per_package" INTEGER);
 
+create table "Stock" (
+    "id" BIGSERIAL NOT NULL PRIMARY KEY,
+    "product_id" INT NOT NULL,
+    "stock" INT,
+    "date" TIMESTAMP NOT NULL);
+
 # --- !Downs
 ;
-drop table "suppliers";
 
 drop table "Product";
 
-drop table "Period";
+drop table "Purchase";
 
-drop table "Count"
+drop table "Count";
+
+drop table "CountDetailByProduct";
+
+drop table "PurchaseDetailByProduct";
+
+drop table "Stock";
