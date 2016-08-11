@@ -55,9 +55,9 @@ class PeriodDAO extends BaseDAO[PurchaseTable, Purchase]{
 
         val query = (for {
             (period, detail) <- tableQ join detailQ on (_.id === _.purchaseId)
-        } yield (period.date, detail.pricePerPackage))
+        } yield (period.date, detail))
             .groupBy(_._1).map {
-                case (date, pairs) => (date, pairs.map(_._2).sum)
+                case (date, pairs) => (date, pairs.map(x => x._2.pricePerPackage * x._2.numberOfPackages).sum)
             }
 
         println(query.result.statements: Iterable[String])
