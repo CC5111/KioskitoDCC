@@ -8,6 +8,7 @@ POST    /create                     controllers.ProductsController.createProduct
 GET     /compras                    controllers.PeriodsController.periods
 
 GET     /conteos                    controllers.CountsController.counts
+GET     /conteos/nuevo              controllers.CountsController.newCount
 
 GET     /estadisticas               controllers.StatisticsController.stats
 
