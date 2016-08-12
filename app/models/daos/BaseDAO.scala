@@ -55,9 +55,9 @@ class PeriodDAO extends BaseDAO[PurchaseTable, Purchase]{
 
         val query = (for {
             (period, detail) <- tableQ join detailQ on (_.id === _.purchaseId)
-        } yield (period.date, detail.pricePerPackage))
+        } yield (period.date, detail))
             .groupBy(_._1).map {
-                case (date, pairs) => (date, pairs.map(_._2).sum)
+                case (date, pairs) => (date, pairs.map(x => x._2.pricePerPackage * x._2.numberOfPackages).sum)
             }
 
         println(query.result.statements: Iterable[String])
@@ -101,6 +101,31 @@ class ProductDetailByPeriodDAO extends BaseDAO[PurchaseDetailByProductTable, Pur
 
     def all: Future[Seq[PurchaseDetailByProduct]] = {
         db.run(tableQ.result)
+    }
+}
+
+@Singleton
+class StockDAO extends BaseDAO[StockTable, Stock] {
+    import dbConfig.driver.api._
+
+    override protected val tableQ = SlickTables.stockQ
+
+    def getLastWithPositiveStock : Future[Seq[(Long, String, Int)]] = {
+        val productQ = SlickTables.productQ
+
+
+        val query = for {
+            (product, stock) <- productQ join tableQ on (_.id === _.productId)
+        } yield (product, stock)
+
+        db.run(query.result).map{ r =>
+            val rr: Seq[(Long, String, Int)] = r.groupBy( x => (x._1.id, x._1.product)).map{ x =>
+                val stocks: Seq[Stock] = x._2.map{_._2}
+                (x._1._1, x._1._2, stocks.sortBy(_.date.getTime()).lastOption.map{_.stock}.getOrElse(0))
+            }.toSeq
+            rr.filter(_._3>0)
+        }
+
     }
 }
 
