@@ -1,0 +1,11 @@
+@()(implicit msg: play.api.i18n.Messages)
+
+
+@main("Estadisticas", 4) {
+    <div ng-controller="newPurchaseCtrl">
+        <h1>Estadísticas</h1>
+        <ul>
+            <li ng-repeat="num in numbers">{{ num }}</li>
+        </ul>
+    </div>
+}
