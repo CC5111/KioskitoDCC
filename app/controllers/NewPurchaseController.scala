@@ -14,6 +14,6 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class NewPurchaseController extends Controller {
-  def newPurchase = Action(implicit request =>
-    Ok(views.html.newPurchase()))
+/*  def newPurchase = Action(implicit request =>
+    Ok(views.html.newPurchase()))*/
 }

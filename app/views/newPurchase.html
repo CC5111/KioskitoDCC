@@ -1,34 +1,41 @@
-
-
-        <div>
-            <table class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Paquetes</th>
-                    <th>Cant/Paquete</th>
-                    <th>Precio/Paquete</th>
-                    <th>P. Venta</th>
-                    <th>
-                        <button class="btn btn-sm btn-primary" ng-click="newProduct()">
-                            <span class="glyphicon glyphicon-plus-sign"></span>
-                        </button>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="product in bag">
-                    <td><input class="form-control input-sm" type="text" ng-model="product.name"></td>
-                    <td><input class="form-control input-sm" type="number" ng-model="product.packages"></td>
-                    <td><input class="form-control input-sm" type="number" ng-model="product.quantityPerPackage"></td>
-                    <td><input class="form-control input-sm" type="number" ng-model="product.purchasePrice"></td>
-                    <td><input class="form-control input-sm" type="number" ng-model="product.salePrice"></td>
-                    <td>
-                        <button class="btn btn-sm btn-danger" ng-click="removeProduct($index)">
-                            <span class="glyphicon glyphicon-remove-sign"></span>
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+<div ng-controller="ModalInstanceCtrl">
+    <div class="modal-header">
+        <h3 class="modal-title">I'm a modal!</h3>
+    </div>
+    <div class="modal-body">
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Paquetes</th>
+                <th>Cant/Paquete</th>
+                <th>Precio/Paquete</th>
+                <th>P. Venta</th>
+                <th>
+                    <button class="btn btn-sm btn-primary" ng-click="newProduct()">
+                        <span class="glyphicon glyphicon-plus-sign"></span>
+                    </button>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="product in bag">
+                <td><input class="form-control input-sm" type="text" ng-model="product.name"></td>
+                <td><input class="form-control input-sm" type="number" ng-model="product.packages"></td>
+                <td><input class="form-control input-sm" type="number" ng-model="product.quantityPerPackage"></td>
+                <td><input class="form-control input-sm" type="number" ng-model="product.purchasePrice"></td>
+                <td><input class="form-control input-sm" type="number" ng-model="product.salePrice"></td>
+                <td>
+                    <button class="btn btn-sm btn-danger" ng-click="removeProduct($index)">
+                        <span class="glyphicon glyphicon-remove-sign"></span>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</div>
