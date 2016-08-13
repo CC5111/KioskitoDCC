@@ -12,6 +12,9 @@ GET     /conteos/nuevo              controllers.CountsController.newCount
 
 GET     /estadisticas               controllers.StatisticsController.stats
 
+
+GET /multi-form                     controllers.CountsController.multiForm()
+
 # An example controller showing how to write asynchronous code
 
 # Map static resources from the /public folder to the /assets URL path

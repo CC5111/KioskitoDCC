@@ -1,0 +1,29 @@
+@()(implicit msg: play.api.i18n.Messages)
+
+
+@main("Multi Form", 32){
+    <form action="/add/Product">
+        <div class="form-group">
+            <input name="product[0].id" type="hidden" value="0">
+            <input name="product[0].product" type="text">
+            <input name="product[0].calories" type="number">
+            <input name="product[0].currentPrice" type="number">
+        </div>
+
+        <div class="form-group">
+            <input name="product[1].id" type="hidden" value="0">
+            <input name="product[1].product" type="text">
+            <input name="product[1].calories" type="number">
+            <input name="product[1].currentPrice" type="number">
+        </div>
+
+        <div class="form-group">
+            <input name="product[2].id" type="hidden" value="0">
+            <input name="product[2].product" type="text">
+            <input name="product[2].calories" type="number">
+            <input name="product[2].currentPrice" type="number">
+        </div>
+
+    </form>
+
+}

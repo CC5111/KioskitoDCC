@@ -27,4 +27,7 @@ class CountsController @Inject()(countDAO: CountDAO, stockDAO: StockDAO)(implici
         }
     )
 
+    def multiForm() = Action {
+        Ok(views.html.multi_form())
+    }
 }
