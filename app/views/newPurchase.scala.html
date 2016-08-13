@@ -1,9 +1,9 @@
 @()(implicit msg: play.api.i18n.Messages)
 
 
-@main("Estadisticas", 4) {
+@main("Nueva Compra", 2) {
     <div ng-controller="newPurchaseCtrl">
-        <h1>Estadísticas</h1>
+        <h1>Nueva compra</h1>
 
         <div>
             <table class="table table-bordered table-striped">
@@ -23,7 +23,8 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="product in bag">
-                    <td><input class="form-control input-sm" type="text" ng-model="product.name"></td>
+                    <td><input class="form-control input-sm" type="text" ng-model="product.name"
+                                uib-typeahead="name for name in names | filter:$viewValue | limitTo:8"></td>
                     <td><input class="form-control input-sm" type="number" ng-model="product.packages"></td>
                     <td><input class="form-control input-sm" type="number" ng-model="product.quantityPerPackage"></td>
                     <td><input class="form-control input-sm" type="number" ng-model="product.purchasePrice"></td>

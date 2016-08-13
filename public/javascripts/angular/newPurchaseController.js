@@ -2,10 +2,10 @@
  * Created by ElisaPaz on 11-08-2016.
  */
 
-var app = angular.module('KioskitoCaDCCApp', []);
+var app = angular.module('KioskitoCaDCCApp', ['ui.bootstrap']);
 
 app.controller('newPurchaseCtrl', function($scope){
-   $scope.numbers = [1,2,3,4,5,6];
+   $scope.names = ['Super 8', 'Chocman', 'Morochas', 'Papas Lays', 'Ramitas', 'Golazo', 'Sopa Maruchan'];
    $scope.bag = [
      {
         name: "",
