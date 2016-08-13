@@ -17,8 +17,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetailByProductDAO, stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
 
-    case class CountDetails(countId: Long, countDetails: Seq[CountDetailWithoutCountId])
-    case class CountDetailWithoutCountId(id: Long, productId: Long, quantity: Int, soldQuantity: Int, salePrice: Int)
+    case class CountDetails(countId: Long, countDetails: Seq[CountDetailByProduct])
+
     val countsForm = Form(
         mapping (
             "countId" -> longNumber,
@@ -29,7 +29,12 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
                     "remainingQuantity" -> number,
                     "soldQuantity" -> number,
                     "salePrice" -> number
-                )(CountDetailWithoutCountId.apply)(CountDetailWithoutCountId.unapply)
+                )({
+                    case (id, productId, remaining, sold, salePrice) => CountDetailByProduct(id, 0, productId, remaining, sold, salePrice)
+                })
+                ({
+                    case detail : CountDetailByProduct => Some((detail.id, detail.productId, detail.quantity, detail.soldQuantity, detail.sellingPrice))
+                })
             )
         )(CountDetails.apply)(CountDetails.unapply)
     )
@@ -51,16 +56,12 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
             formWithErrors => {
                 Future(Redirect(routes.CountsController.counts()))
             },
-            details => {
+            countDetails => {
                 val calendar = Calendar.getInstance()
                 val currentDate = calendar.getTime
-                countDAO.insert(Count(details.countId, new Timestamp(currentDate.getTime), 0))
+                countDAO.insert(Count(countDetails.countId, new Timestamp(currentDate.getTime), 0))
 
-                for {
-                    partialCountDetail <- details.countDetails
-                } countDetailDAO.insert(CountDetailByProduct(partialCountDetail.id,
-                    details.countId, partialCountDetail.productId, partialCountDetail.quantity, partialCountDetail.soldQuantity,
-                    partialCountDetail.salePrice))
+                countDetails.countDetails.map(countDetail => countDetailDAO.insert(countDetail.copy(countId = countDetails.countId)))
 
                 Future(Redirect(routes.CountsController.counts()))
 
