@@ -68,7 +68,7 @@ class PeriodDAO extends BaseDAO[PurchaseTable, Purchase]{
 }
 
 @Singleton
-class CountDAO extends BaseDAO[CountDetailByProductTable, CountDetailByProduct]{
+class CountDetailByProductDAO extends BaseDAO[CountDetailByProductTable, CountDetailByProduct]{
   import dbConfig.driver.api._
 
   override protected val tableQ = SlickTables.countDetailQ

@@ -14,7 +14,7 @@ import play.api.i18n.Messages.Implicits._
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class CountsController @Inject()(countDAO: CountDAO, stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
+class CountsController @Inject()(countDAO: CountDetailByProductDAO, stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
     def counts() = Action.async(implicit request =>
         countDAO.getCountsWithEarnings().map { counts =>
             Ok(views.html.counts(counts.toList))
