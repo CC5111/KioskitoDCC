@@ -127,9 +127,9 @@ class StockDAO extends BaseDAO[StockTable, Stock] {
         } yield (product, stock)
 
         db.run(query.result).map{ r =>
-            val rr: Seq[ProductWithStock] = r.groupBy( x => (x._1.id, x._1.product)).map{ x =>
+            val rr: Seq[ProductWithStock] = r.groupBy( x => (x._1.id, x._1.product, x._1.currentPrice)).map{ x =>
                 val stocks: Seq[Stock] = x._2.map{_._2}
-                ProductWithStock(x._1._1, x._1._2, stocks.sortBy(_.date.getTime()).lastOption.map{_.stock}.getOrElse(0))
+                ProductWithStock(x._1._1, x._1._2, x._1._3, stocks.sortBy(_.date.getTime()).lastOption.map{_.stock}.getOrElse(0))
             }.toSeq
             rr.filter(_.stock > 0)
         }
