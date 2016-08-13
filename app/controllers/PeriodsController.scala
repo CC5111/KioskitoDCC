@@ -1,8 +1,12 @@
 package controllers
+import java.sql.Timestamp
+import java.util.Calendar
+
 import play.api.mvc._
 import models.daos._
 import javax.inject.{Inject, Singleton}
 
+import models.entities.{Purchase, PurchaseDetailByProduct}
 import play.api.data._
 import play.api.data.Forms._
 import play.api.Play.current
