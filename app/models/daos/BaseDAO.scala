@@ -110,7 +110,7 @@ class StockDAO extends BaseDAO[StockTable, Stock] {
 
     override protected val tableQ = SlickTables.stockQ
 
-    def getLastWithPositiveStock : Future[Seq[(Long, String, Int)]] = {
+    def getLastWithPositiveStock : Future[Seq[ProductWithStock]] = {
         val productQ = SlickTables.productQ
 
 
@@ -119,11 +119,11 @@ class StockDAO extends BaseDAO[StockTable, Stock] {
         } yield (product, stock)
 
         db.run(query.result).map{ r =>
-            val rr: Seq[(Long, String, Int)] = r.groupBy( x => (x._1.id, x._1.product)).map{ x =>
+            val rr: Seq[ProductWithStock] = r.groupBy( x => (x._1.id, x._1.product)).map{ x =>
                 val stocks: Seq[Stock] = x._2.map{_._2}
-                (x._1._1, x._1._2, stocks.sortBy(_.date.getTime()).lastOption.map{_.stock}.getOrElse(0))
+                ProductWithStock(x._1._1, x._1._2, stocks.sortBy(_.date.getTime()).lastOption.map{_.stock}.getOrElse(0))
             }.toSeq
-            rr.filter(_._3>0)
+            rr.filter(_.stock > 0)
         }
 
     }
