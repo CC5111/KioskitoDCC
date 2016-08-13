@@ -13,7 +13,8 @@ GET     /conteos/nuevo              controllers.CountsController.newCount
 GET     /estadisticas               controllers.StatisticsController.stats
 
 
-GET /multi-form                     controllers.CountsController.multiForm()
+GET     /multi-form                 controllers.CountsController.multiForm()
+POST    /add/Product                controllers.CountsController.addProducts()
 
 # An example controller showing how to write asynchronous code
 
