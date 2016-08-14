@@ -43,6 +43,9 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
         def quantityByPackage = column[Int]("quantity_by_package")
         def pricePerPackage = column[Int]("price_per_package")
 
+        def product = foreignKey("product_fk", productId, productQ)(_.id)
+        def purchase = foreignKey("purchase_fk", purchaseId, purchaseQ)(_.id)
+
         def * = (id, productId, purchaseId, numberOfPackages, quantityByPackage, pricePerPackage) <> (PurchaseDetailByProduct.tupled, PurchaseDetailByProduct.unapply _)
     }
 
@@ -55,6 +58,9 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
         def quantity = column[Int]("quantity")
         def soldQuantity = column[Int]("sold_quantity")
         def sellingPrice = column[Int]("selling_price")
+
+        def product = foreignKey("product_fk", productId, productQ)(_.id)
+        def count = foreignKey("count_fk", countId, countQ)(_.id)
 
         def * = (id, countId, productId, quantity, soldQuantity, sellingPrice) <> (CountDetailByProduct.tupled, CountDetailByProduct.unapply _)
     }
@@ -74,6 +80,8 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
         def productId = column[Long]("product_id")
         def stock = column[Int]("stock")
         def date = column[java.sql.Timestamp]("date")
+
+        def product = foreignKey("product_fk", productId, productQ)(_.id)
 
         def * = (id, productId, stock, date) <> (Stock.tupled, Stock.unapply _)
     }
