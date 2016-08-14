@@ -144,6 +144,30 @@ class StockDAO extends BaseDAO[StockTable, Stock] {
         }
 
     }
+
+    def createNewStock(productId: Long, newStock: Int, currentTimestamp: Timestamp ) = {
+
+        val query = tableQ.filter(_.productId === productId).sortBy(_.date.desc).take(1).map{_.stock}
+        println(query.result.statements)
+
+        db.run(query.result).map {lastStock =>
+            val previousStock: Int = lastStock.head
+            val stock : Int = previousStock + newStock
+
+            db.run(tableQ returning tableQ.map(_.id) += Stock(0, productId, stock, currentTimestamp))
+        }
+
+        /*         val productStocks: Query[StockTable, Stock, Seq] = tableQ.filter(_.productId === productId)
+
+                    db.run(productStocks.result).map { stocks =>
+                    val previousStock: Int = stocks.sortBy(_.date.getTime()).lastOption.map{_.stock}.getOrElse(0)
+                    val stock : Int = previousStock + newStock
+
+                    db.run(tableQ returning tableQ.map(_.id) += Stock(0, productId, stock, currentTimestamp))
+
+                }*/
+
+    }
 }
 
 abstract class BaseDAO[T <: BaseTable[A], A <: BaseEntity]() extends AbstractBaseDAO[T,A] with HasDatabaseConfig[JdbcProfile] {

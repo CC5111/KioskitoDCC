@@ -15,7 +15,8 @@ import play.api.i18n.Messages.Implicits._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PeriodsController @Inject()(periodDAO: PeriodDAO, productDAO: ProductDAO, purchaseDetailDAO: ProductDetailByPeriodDAO)(implicit ec: ExecutionContext) extends Controller{
+class PeriodsController @Inject()(periodDAO: PeriodDAO, productDAO: ProductDAO, purchaseDetailDAO: ProductDetailByPeriodDAO,
+                                  stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
 
     case class ShoppingList(purchaseId: Long, products: Seq[PurchasedProduct])
     case class PurchasedProduct(id: Long, productId: Long, product: String, packages: Int, quantityPerPackage: Int,
@@ -54,10 +55,13 @@ class PeriodsController @Inject()(periodDAO: PeriodDAO, productDAO: ProductDAO, 
                 val calendar = Calendar.getInstance()
                 val currentDate = calendar.getTime
 
-                val insertedPurchase: Future[Long] = periodDAO.insert(Purchase(shoppingList.purchaseId, new Timestamp(currentDate.getTime)))
+                val currentTimestamp: Timestamp = new Timestamp(currentDate.getTime)
+
+                val insertedPurchase: Future[Long] = periodDAO.insert(Purchase(shoppingList.purchaseId, currentTimestamp))
                 insertedPurchase.map(purchaseId =>
                     shoppingList.products.map(x => {
                         productDAO.updateCurrentPrice(x.productId, x.salePrice)
+                        stockDAO.createNewStock(x.productId, x.packages * x.quantityPerPackage, currentTimestamp)
                         purchaseDetailDAO.insert(PurchaseDetailByProduct(x.id, x.productId, purchaseId, x.packages, x.quantityPerPackage, x.pricePerPackage))
                     }
                     )
