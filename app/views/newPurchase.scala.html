@@ -24,7 +24,7 @@
                 <tbody>
                 <tr ng-repeat="product in bag">
                     <td><input class="form-control input-sm" type="text" ng-model="product.name"
-                                uib-typeahead="name for name in names | filter:$viewValue | limitTo:8"></td>
+                                uib-typeahead="name.name for name in names | filter:$viewValue | limitTo:8"></td>
                     <td><input class="form-control input-sm" type="number" ng-model="product.packages"></td>
                     <td><input class="form-control input-sm" type="number" ng-model="product.quantityPerPackage"></td>
                     <td><input class="form-control input-sm" type="number" ng-model="product.purchasePrice"></td>

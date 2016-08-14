@@ -4,8 +4,11 @@
 
 var app = angular.module('KioskitoCaDCCApp', ['ui.bootstrap']);
 
-app.controller('newPurchaseCtrl', function($scope){
-   $scope.names = ['Super 8', 'Chocman', 'Morochas', 'Papas Lays', 'Ramitas', 'Golazo', 'Sopa Maruchan'];
+app.controller('newPurchaseCtrl', function($scope, $http){
+    $http.get('/getProductsNames').success(function(data){
+        $scope.names = data;
+    });
+
    $scope.bag = [
      {
         name: "",
