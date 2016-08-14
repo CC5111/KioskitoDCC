@@ -54,12 +54,15 @@ class PeriodsController @Inject()(periodDAO: PeriodDAO, productDAO: ProductDAO, 
                 val calendar = Calendar.getInstance()
                 val currentDate = calendar.getTime
 
-                periodDAO.insert(Purchase(shoppingList.purchaseId, new Timestamp(currentDate.getTime)))
-                shoppingList.products.map(x =>
-                 //   productDAO.update(Product(x.productId, x.product))
-                    purchaseDetailDAO.insert(PurchaseDetailByProduct(x.id, x.productId, shoppingList.purchaseId, x.packages, x.quantityPerPackage, x.pricePerPackage))
-
+                val insertedPurchase: Future[Long] = periodDAO.insert(Purchase(shoppingList.purchaseId, new Timestamp(currentDate.getTime)))
+                insertedPurchase.map(purchaseId =>
+                    shoppingList.products.map(x => {
+                        productDAO.updateCurrentPrice(x.productId, x.salePrice)
+                        purchaseDetailDAO.insert(PurchaseDetailByProduct(x.id, x.productId, purchaseId, x.packages, x.quantityPerPackage, x.pricePerPackage))
+                    }
+                    )
                 )
+
 
                 Future(Redirect(routes.PeriodsController.periods()))
             }

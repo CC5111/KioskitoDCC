@@ -37,6 +37,15 @@ class ProductDAO extends BaseDAO[ProductTable, Product]{
     def all: Future[Seq[Product]] = {
         db.run(tableQ.result)
     }
+
+    def updateCurrentPrice(id: Long, newPrice: Int) = {
+        val query = tableQ.filter(_.id === id).map(
+            product => product.currentPrice
+        )
+
+        db.run(query.update(newPrice))
+
+    }
 }
 
 @Singleton
