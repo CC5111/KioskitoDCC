@@ -2,5 +2,13 @@
 
 
 @main("Finanzas", 4) {
-  <h1>Finanzas</h1>
+    <div ng-controller="financesChartCtrl">
+        <h1>Finanzas</h1>
+        <div>
+            <canvas id="line" class="chart chart-line" chart-data="data"
+            chart-labels="labels" chart-series="series" chart-options="options"
+            chart-dataset-override="datasetOverride" chart-click="onClick">
+            </canvas>
+        </div>
+    </div>
 }
