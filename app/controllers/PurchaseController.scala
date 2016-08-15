@@ -39,15 +39,15 @@ class PurchaseController @Inject()(periodDAO: PurchaseDAO, productDAO: ProductDA
     )
 
     def purchases() = Action.async{ implicit request =>
-        periodDAO.getPeriodsTotalCost.map{ periods =>
-            Ok(views.html.periods(periods.toList))
+        periodDAO.getPeriodsTotalCost.map{ purchases =>
+            Ok(views.html.purchases(purchases.toList))
         }
     }
 
     def createPurchase = Action.async{ implicit request =>
         purchaseForm.bindFromRequest().fold(
             formWithErrors => {
-                Future(Redirect(routes.PeriodsController.periods()))
+                Future(Redirect(routes.PurchaseController.purchases()))
             },
 
             shoppingList => {
@@ -67,7 +67,7 @@ class PurchaseController @Inject()(periodDAO: PurchaseDAO, productDAO: ProductDA
                 )
 
 
-                Future(Redirect(routes.PeriodsController.periods()))
+                Future(Redirect(routes.PurchaseController.purchases()))
             }
         )
 
