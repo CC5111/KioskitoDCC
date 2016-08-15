@@ -49,7 +49,7 @@ class ProductDAO extends BaseDAO[ProductTable, Product]{
 }
 
 @Singleton
-class PeriodDAO extends BaseDAO[PurchaseTable, Purchase]{
+class PurchaseDAO extends BaseDAO[PurchaseTable, Purchase]{
   import dbConfig.driver.api._
 
   override protected val tableQ = SlickTables.purchaseQ

@@ -15,7 +15,7 @@ import play.api.i18n.Messages.Implicits._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PurchaseController @Inject()(periodDAO: PeriodDAO, productDAO: ProductDAO, purchaseDetailDAO: ProductDetailByPeriodDAO,
+class PurchaseController @Inject()(periodDAO: PurchaseDAO, productDAO: ProductDAO, purchaseDetailDAO: ProductDetailByPeriodDAO,
                                    stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
 
     case class ShoppingList(purchaseId: Long, products: Seq[PurchasedProduct])
