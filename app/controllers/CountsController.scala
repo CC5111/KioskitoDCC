@@ -6,7 +6,7 @@ import play.api.mvc._
 import models.daos._
 import javax.inject.{Inject, Singleton}
 
-import models.entities.{Count, CountDetailByProduct}
+import models.entities.{Count, CountDetailByProduct, Stock}
 import play.api.data._
 import play.api.data.Forms._
 import play.api.Play.current
@@ -60,10 +60,15 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
             countDetails => {
                 val calendar = Calendar.getInstance()
                 val currentDate = calendar.getTime
-                countDAO.insert(Count(countDetails.countId, new Timestamp(currentDate.getTime), countDetails.actualEarnings)).map {
+                val currentTimestamp: Timestamp = new Timestamp(currentDate.getTime)
+
+                countDAO.insert(Count(countDetails.countId, currentTimestamp, countDetails.actualEarnings)).map {
                     insertedCountId =>
                         countDetails.countDetails.map(
-                            countDetail => countDetailDAO.insert(countDetail.copy(countId = insertedCountId))
+                            countDetail => {
+                                countDetailDAO.insert(countDetail.copy(countId = insertedCountId))
+                                stockDAO.insert(Stock(0, countDetail.productId, countDetail.quantity, currentTimestamp))
+                            }
                         )
                 }
 
