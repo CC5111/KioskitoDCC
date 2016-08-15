@@ -17,11 +17,12 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetailByProductDAO, stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
 
-    case class CountDetails(countId: Long, countDetails: Seq[CountDetailByProduct])
+    case class CountDetails(countId: Long, actualEarnings: Int, countDetails: Seq[CountDetailByProduct])
 
     val countsForm = Form(
         mapping (
             "countId" -> longNumber,
+            "actualEarnings" -> number,
             "countDetails" -> seq(
                 mapping(
                     "id" -> longNumber,
@@ -59,13 +60,12 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
             countDetails => {
                 val calendar = Calendar.getInstance()
                 val currentDate = calendar.getTime
-                countDAO.insert(Count(countDetails.countId, new Timestamp(currentDate.getTime), 0)).map {
+                countDAO.insert(Count(countDetails.countId, new Timestamp(currentDate.getTime), countDetails.actualEarnings)).map {
                     insertedCountId =>
                         countDetails.countDetails.map(
                             countDetail => countDetailDAO.insert(countDetail.copy(countId = insertedCountId))
                         )
                 }
-
 
                 Future(Redirect(routes.CountsController.counts()))
 
