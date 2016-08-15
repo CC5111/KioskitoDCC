@@ -37,6 +37,15 @@ class ProductDAO extends BaseDAO[ProductTable, Product]{
     def all: Future[Seq[Product]] = {
         db.run(tableQ.result)
     }
+
+    def updateCurrentPrice(id: Long, newPrice: Int) = {
+        val query = tableQ.filter(_.id === id).map(
+            product => product.currentPrice
+        )
+
+        db.run(query.update(newPrice))
+
+    }
 }
 
 @Singleton
@@ -68,7 +77,15 @@ class PeriodDAO extends BaseDAO[PurchaseTable, Purchase]{
 }
 
 @Singleton
-class CountDAO extends BaseDAO[CountDetailByProductTable, CountDetailByProduct]{
+class CountDAO extends BaseDAO[CountTable, Count]{
+    import dbConfig.driver.api._
+
+    override protected val tableQ = SlickTables.countQ
+
+}
+
+@Singleton
+class CountDetailByProductDAO extends BaseDAO[CountDetailByProductTable, CountDetailByProduct]{
   import dbConfig.driver.api._
 
   override protected val tableQ = SlickTables.countDetailQ
@@ -110,7 +127,7 @@ class StockDAO extends BaseDAO[StockTable, Stock] {
 
     override protected val tableQ = SlickTables.stockQ
 
-    def getLastWithPositiveStock : Future[Seq[(Long, String, Int)]] = {
+    def getLastWithPositiveStock : Future[Seq[ProductWithStock]] = {
         val productQ = SlickTables.productQ
 
 
@@ -119,12 +136,36 @@ class StockDAO extends BaseDAO[StockTable, Stock] {
         } yield (product, stock)
 
         db.run(query.result).map{ r =>
-            val rr: Seq[(Long, String, Int)] = r.groupBy( x => (x._1.id, x._1.product)).map{ x =>
+            val rr: Seq[ProductWithStock] = r.groupBy( x => (x._1.id, x._1.product, x._1.currentPrice)).map{ x =>
                 val stocks: Seq[Stock] = x._2.map{_._2}
-                (x._1._1, x._1._2, stocks.sortBy(_.date.getTime()).lastOption.map{_.stock}.getOrElse(0))
+                ProductWithStock(x._1._1, x._1._2, x._1._3, stocks.sortBy(_.date.getTime()).lastOption.map{_.stock}.getOrElse(0))
             }.toSeq
-            rr.filter(_._3>0)
+            rr.filter(_.stock > 0)
         }
+
+    }
+
+    def createNewStock(productId: Long, newStock: Int, currentTimestamp: Timestamp ) = {
+
+        val query = tableQ.filter(_.productId === productId).sortBy(_.date.desc).take(1).map{_.stock}
+        println(query.result.statements)
+
+        db.run(query.result).map {lastStock =>
+            val previousStock: Int = lastStock.head
+            val stock : Int = previousStock + newStock
+
+            db.run(tableQ returning tableQ.map(_.id) += Stock(0, productId, stock, currentTimestamp))
+        }
+
+        /*         val productStocks: Query[StockTable, Stock, Seq] = tableQ.filter(_.productId === productId)
+
+                    db.run(productStocks.result).map { stocks =>
+                    val previousStock: Int = stocks.sortBy(_.date.getTime()).lastOption.map{_.stock}.getOrElse(0)
+                    val stock : Int = previousStock + newStock
+
+                    db.run(tableQ returning tableQ.map(_.id) += Stock(0, productId, stock, currentTimestamp))
+
+                }*/
 
     }
 }

@@ -1,4 +1,4 @@
-@(stocks: List[Tuple3[Long, String, Int]])(implicit msg: play.api.i18n.Messages)
+@(stocks: List[models.entities.ProductWithStock])(implicit msg: play.api.i18n.Messages)
 
 @main("Productos", 5) {
 <h1>PRODUCTOS</h1>
@@ -11,9 +11,9 @@
     <tbody>
     @for(product <- stocks) {
     <tr>
-        <td>@product._2</td>
-        <td>@product._1</td>
-        <td>@product._3</td>
+        <td>@product.product</td>
+        <td>@product.id</td>
+        <td>@product.stock</td>
     </tr>
     }
     </tbody>

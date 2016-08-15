@@ -8,4 +8,4 @@ case class PurchaseDetailByProduct(id: Long, productId: Long, purchaseId: Long, 
 case class CountDetailByProduct(id: Long, countId: Long, productId: Long, quantity: Int, soldQuantity: Int, sellingPrice: Int ) extends BaseEntity
 
 // Can add observations later
-case class Count(id: Long, date: java.sql.Timestamp, actualEarnings: Int)
+case class Count(id: Long, date: java.sql.Timestamp, actualEarnings: Int) extends BaseEntity
