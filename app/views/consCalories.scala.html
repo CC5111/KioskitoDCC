@@ -2,5 +2,10 @@
 
 
 @main("Calorias consumidas", 6) {
-  <h1>Calorías consumidas</h1>
+    <div ng-controller="consCaloriesChartCtrl">
+        <h1>Calorías consumidas</h1>
+        <div>
+            <nvd3 options="options" data="data"></nvd3>
+        </div>
+    </div>
 }
