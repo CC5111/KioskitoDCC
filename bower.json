@@ -20,6 +20,12 @@
     "jquery": "^3.1.0",
     "bootstrap": "^3.3.7",
     "angular": "^1.5.8",
-    "angular-bootstrap": "^2.0.1"
+    "angular-bootstrap": "^2.0.1",
+    "angular-nvd3": "^1.0.8",
+    "d3": "^4.2.1",
+    "nvd3": "^1.8.4"
+  },
+  "resolutions": {
+    "d3": "^3.4.4"
   }
 }
