@@ -38,14 +38,64 @@ app.controller('newPurchaseCtrl', function($scope, $http){
 });
 
 app.controller('financesChartCtrl', function($scope){
-    
+
 });
 
 app.controller('soldProductsChartCtrl', function($scope) {
 
 });
 
-app.controller('consCaloriesChartCtrl', function($scope) {
+app.controller('totalConsCaloriesChartCtrl', function($scope){
+    $scope.options = {
+        chart: {
+            type: 'lineChart',
+            height: 450,
+            margin : {
+                top: 20,
+                right: 20,
+                bottom: 40,
+                left: 55
+            },
+            x: function(d){return d[0];},
+            y: function(d){return d[1];},
+            useInteractiveGuideline: true,
+            showLegend: false,
+            dispatch: {
+                stateChange: function(e){ console.log("stateChange"); },
+                changeState: function(e){ console.log("changeState"); },
+                tooltipShow: function(e){ console.log("tooltipShow"); },
+                tooltipHide: function(e){ console.log("tooltipHide"); }
+            },
+            xAxis: {
+                axisLabel: 'Fecha',
+                tickFormat: function(d) {
+                    return d3.time.format('%x')(new Date(d))
+                },
+                showMaxMin: false
+            },
+            yAxis: {
+                axisLabel: 'Calorías',
+                tickFormat: function(d){
+                    return d3.format('.02f')(d);
+                },
+                showMaxMin: false
+            }
+        },
+        title: {
+            enable: true,
+            text: 'Total de calorías consumidas entre fechas'
+        }
+    }
+
+    $scope.data = [
+        {
+            "key" : "Calorías" ,
+            "values" : [ [ 1025409600000 , 23.041422681023] , [ 1028088000000 , 19.854291255832] , [ 1030766400000 , 21.02286281168] , [ 1033358400000 , 22.093608385173] , [ 1036040400000 , 25.108079299458] , [ 1038632400000 , 26.982389242348] , [ 1041310800000 , 19.828984957662]]
+        }
+    ]
+});
+
+app.controller('detailedConsCaloriesChartCtrl', function($scope) {
     $scope.options = {
         chart: {
             type: 'stackedAreaChart',
@@ -123,3 +173,5 @@ app.controller('consCaloriesChartCtrl', function($scope) {
 
     ]
 });
+
+
