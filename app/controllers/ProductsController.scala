@@ -22,10 +22,10 @@ class ProductsController @Inject()(productDAO: ProductDAO)(implicit ec: Executio
             "calorias" -> number
         )({
             case (id, producto, calorias) => Product(id, producto, calorias, 0)
+        })({
+            case p: Product => Some((p.id, p.product, p.calories))
         }
-        )({
-            case p : Product => Some((p.id, p.product, p.calories))
-        })
+        )
     )
 
     def products = Action.async{ implicit request =>

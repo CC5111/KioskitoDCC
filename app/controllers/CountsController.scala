@@ -47,7 +47,7 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
 
     def newCount() = Action.async(implicit request =>
         stockDAO.getLastWithPositiveStock.map { stocks =>
-            Ok(views.html.add_count(stocks.toList))
+            Ok(views.html.new_count(stocks.toList))
         }
     )
 

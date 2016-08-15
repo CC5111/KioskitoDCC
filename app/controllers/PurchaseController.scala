@@ -15,8 +15,8 @@ import play.api.i18n.Messages.Implicits._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PeriodsController @Inject()(periodDAO: PeriodDAO, productDAO: ProductDAO, purchaseDetailDAO: ProductDetailByPeriodDAO,
-                                  stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
+class PurchaseController @Inject()(periodDAO: PurchaseDAO, productDAO: ProductDAO, purchaseDetailDAO: ProductDetailByPeriodDAO,
+                                   stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
 
     case class ShoppingList(purchaseId: Long, products: Seq[PurchasedProduct])
     case class PurchasedProduct(id: Long, productId: Long, packages: Int, quantityPerPackage: Int,
@@ -38,16 +38,16 @@ class PeriodsController @Inject()(periodDAO: PeriodDAO, productDAO: ProductDAO, 
         )(ShoppingList.apply)(ShoppingList.unapply)
     )
 
-    def periods() = Action.async{ implicit request =>
-        periodDAO.getPeriodsTotalCost.map{ periods =>
-            Ok(views.html.periods(periods.toList))
+    def purchases() = Action.async{ implicit request =>
+        periodDAO.getPeriodsTotalCost.map{ purchases =>
+            Ok(views.html.purchases(purchases.toList))
         }
     }
 
     def createPurchase = Action.async{ implicit request =>
         purchaseForm.bindFromRequest().fold(
             formWithErrors => {
-                Future(Redirect(routes.PeriodsController.periods()))
+                Future(Redirect(routes.PurchaseController.purchases()))
             },
 
             shoppingList => {
@@ -67,7 +67,7 @@ class PeriodsController @Inject()(periodDAO: PeriodDAO, productDAO: ProductDAO, 
                 )
 
 
-                Future(Redirect(routes.PeriodsController.periods()))
+                Future(Redirect(routes.PurchaseController.purchases()))
             }
         )
 
