@@ -5,7 +5,7 @@
 GET     /productos                  controllers.ProductsController.products
 POST    /create                     controllers.ProductsController.createProduct
 
-GET     /compras                    controllers.PeriodsController.periods
+GET     /compras                    controllers.PurchaseController.periods
 GET     /compras/nueva              controllers.NewPurchaseController.newPurchase
 
 GET     /conteos                    controllers.CountsController.counts
