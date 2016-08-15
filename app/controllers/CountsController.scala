@@ -59,9 +59,13 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
             countDetails => {
                 val calendar = Calendar.getInstance()
                 val currentDate = calendar.getTime
-                countDAO.insert(Count(countDetails.countId, new Timestamp(currentDate.getTime), 0))
+                countDAO.insert(Count(countDetails.countId, new Timestamp(currentDate.getTime), 0)).map {
+                    insertedCountId =>
+                        countDetails.countDetails.map(
+                            countDetail => countDetailDAO.insert(countDetail.copy(countId = insertedCountId))
+                        )
+                }
 
-                countDetails.countDetails.map(countDetail => countDetailDAO.insert(countDetail.copy(countId = countDetails.countId)))
 
                 Future(Redirect(routes.CountsController.counts()))
 
