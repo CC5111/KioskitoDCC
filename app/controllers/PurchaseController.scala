@@ -38,7 +38,7 @@ class PurchaseController @Inject()(periodDAO: PurchaseDAO, productDAO: ProductDA
         )(ShoppingList.apply)(ShoppingList.unapply)
     )
 
-    def periods() = Action.async{ implicit request =>
+    def purchases() = Action.async{ implicit request =>
         periodDAO.getPeriodsTotalCost.map{ periods =>
             Ok(views.html.periods(periods.toList))
         }
