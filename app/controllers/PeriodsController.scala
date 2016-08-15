@@ -19,7 +19,7 @@ class PeriodsController @Inject()(periodDAO: PeriodDAO, productDAO: ProductDAO, 
                                   stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
 
     case class ShoppingList(purchaseId: Long, products: Seq[PurchasedProduct])
-    case class PurchasedProduct(id: Long, productId: Long, product: String, packages: Int, quantityPerPackage: Int,
+    case class PurchasedProduct(id: Long, productId: Long, packages: Int, quantityPerPackage: Int,
                                 pricePerPackage: Int, salePrice: Int)
 
     val purchaseForm = Form(
@@ -29,7 +29,6 @@ class PeriodsController @Inject()(periodDAO: PeriodDAO, productDAO: ProductDAO, 
                 mapping(
                     "id" -> longNumber,
                     "productId" -> longNumber,
-                    "product" -> nonEmptyText,
                     "packages" -> number,
                     "quantityPerPackage" -> number,
                     "pricePerPackage" -> number,
