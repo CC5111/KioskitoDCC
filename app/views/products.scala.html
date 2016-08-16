@@ -1,4 +1,4 @@
-@(products: List[models.entities.Product], form: Form[models.entities.Product])(implicit msg: play.api.i18n.Messages)
+@(products: List[(models.entities.Product, Int)], form: Form[models.entities.Product])(implicit msg: play.api.i18n.Messages)
 
 
 @main("Productos", 1) {
@@ -38,13 +38,15 @@
             <th>Nombre</th>
             <th>Precio</th>
             <th>Calorías</th>
+            <th>Stock</th>
         </thead>
         <tbody>
         @for(product <- products) {
             <tr>
-                <td>@product.product</td>
-                <td>@product.currentPrice</td>
-                <td>@product.calories</td>
+                <td>@product._1.product</td>
+                <td>@product._1.currentPrice</td>
+                <td>@product._1.calories</td>
+                <td>@product._2</td>
             </tr>
         }
         </tbody>

@@ -30,17 +30,17 @@ class ProductsController @Inject()(productDAO: ProductDAO, stockDAO: StockDAO)(i
         )
     )
 
-    def products = Action.async{ implicit request =>
-        productDAO.all.map{ products =>
+    def products = Action.async(implicit request =>
+        productDAO.getAllWithStock.map{ products =>
             Ok(views.html.products(products.toList, productForm))
         }
-    }
+    )
 
     def createProduct = Action.async{ implicit request =>
         productForm.bindFromRequest.fold(
             formWithErrors => {
                 /* imprimir error*/
-                productDAO.all.map{ products =>
+                productDAO.getAllWithStock.map{ products =>
                     Ok(views.html.products(products.toList, formWithErrors))
                 }
             },

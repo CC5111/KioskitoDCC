@@ -38,6 +38,21 @@ class ProductDAO extends BaseDAO[ProductTable, Product]{
         db.run(tableQ.result)
     }
 
+    def getAllWithStock : Future[Seq[(Product, Int)]] = {
+        val stockQ = SlickTables.stockQ
+
+        val query = for {
+            (product, stock) <- tableQ join stockQ on (_.id === _.productId)
+        } yield (product, stock)
+
+        db.run(query.result).map { results =>
+            val grouped: Map[(Long, Product), Seq[(Product, Stock)]] = results.groupBy(x => (x._1.id, x._1))
+            grouped.map{
+                case (prod, rest) => (prod._2, rest.map(_._2).sortBy(_.date.getTime).lastOption.map(_.stock).getOrElse(0))
+            }.toSeq
+        }
+    }
+
     def updateCurrentPrice(id: Long, newPrice: Int) = {
         val query = tableQ.filter(_.id === id).map(
             product => product.currentPrice
