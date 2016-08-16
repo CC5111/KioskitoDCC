@@ -8,7 +8,6 @@ app.controller('newPurchaseCtrl', function ($scope, $http) {
     $http.get('/getProductsNames').success(function (data) {
         $scope.products = data;
     });
-    $scope.test = "holi"
     $scope.bag = [
         {
             name: "",
@@ -43,9 +42,16 @@ app.controller('newPurchaseCtrl', function ($scope, $http) {
     $scope.removeProduct = function (index) {
         $scope.bag.splice(index, 1);
     };
-
+    $scope.findProductId = function(n){
+        for (var i = 0; i < $scope.products.length; i++) {
+            if ($scope.products[i].name == n) return $scope.products[i].id
+        }
+    }
     $scope.submitForm = function () {
-        console.log("posting data....");
+        for (var i = 0; i < $scope.bag.length; i++) {
+            $scope.bag[i].id = $scope.findProductId($scope.bag[i].name)
+        }
+        console.log(JSON.stringify($scope.form));
         $http.post('/compras/crear', JSON.stringify($scope.form)).success(function () {/*success callback*/
         });
     };
