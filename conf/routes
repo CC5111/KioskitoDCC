@@ -11,7 +11,10 @@ GET     /compras/nueva              controllers.NewPurchaseController.newPurchas
 GET     /conteos                    controllers.CountsController.counts
 GET     /conteos/nuevo              controllers.CountsController.newCount
 
-GET     /estadisticas               controllers.StatisticsController.stats
+GET     /finanzas                   controllers.ChartsController.finances
+GET     /prodsVendidos              controllers.ChartsController.soldProducts
+GET     /calsConsumidas             controllers.ChartsController.consCalories
+
 
 GET     /getProductsNames           controllers.NewPurchaseController.getProductsNames
 

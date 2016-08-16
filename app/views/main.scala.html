@@ -5,13 +5,21 @@
 <html ng-app="KioskitoCaDCCApp">
     <head>
         <title>@title</title>
+        <meta charset="utf-8">
         <script src="@routes.Assets.versioned("bower_components/jquery/dist/jquery.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.versioned("bower_components/bootstrap/dist/js/bootstrap.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.versioned("bower_components/angular/angular.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.versioned("bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js")" type="text/javascript"></script>
-        <script src="@routes.Assets.versioned("javascripts/angular/newPurchaseController.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("bower_components/d3/d3.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("bower_components/nvd3/build/nv.d3.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("bower_components/angular-nvd3/dist/angular-nvd3.min.js")" type="text/javascript"></script>
+
+        <script src="@routes.Assets.versioned("javascripts/angular/controllers.js")" type="text/javascript"></script>
+        @*<script src="@routes.Assets.versioned("javascripts/angular/newPurchaseController.js")" type="text/javascript"></script>*@
+        @*<script src="@routes.Assets.versioned("javascripts/angular/financesChartController.js")" type="text/javascript"></script>*@
 
         <link href="@routes.Assets.versioned("bower_components/bootstrap/dist/css/bootstrap.min.css")" rel="stylesheet">
+        <link href="@routes.Assets.versioned("bower_components/nvd3/build/nv.d3.min.css")" rel="stylesheet">
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
 
@@ -20,7 +28,7 @@
     <body>
         <ul class="nav nav-pills nav-justified">
             <li class="@if(current == 1) {active}"><a href="/productos">Productos</a></li>
-            <li class="dropdown @if(current >= 2 && current <= 3 ) {active}">
+            <li class="dropdown @if(current >= 2 && current <= 3) {active}">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#"
                 role="button" aria-haspopup="true" aria-expanded="false">
                     Registros <span class="caret"></span>
@@ -30,7 +38,17 @@
                     <li class="@if(current == 3) {active}"><a href="/conteos">Conteos</a></li>
                 </ul>
             </li>
-            <li class="@if(current == 4) {active}"><a href="/estadisticas">Estadísticas</a></li>
+            <li class="dropdown@if(current >= 4 && current <= 6) {active}">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#"
+                role="button" aria-haspopup="true" aria-expanded="false">
+                    Estadísticas <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu nav-pills nav-justified">
+                    <li class="@if(current == 4) {active}"><a href="/finanzas">Finanzas</a></li>
+                    <li class="@if(current == 5) {active}"><a href="/prodsVendidos">Productos vendidos</a></li>
+                    <li class="@if(current == 6) {active}"><a href="/calsConsumidas">Calorías consumidas</a></li>
+                </ul>
+            </li>
         </ul>
         <div id="content" class="container">
         @content
