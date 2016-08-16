@@ -1,19 +1,21 @@
 package controllers
+import java.sql.Timestamp
+import java.util.Calendar
+
 import play.api.mvc._
 import models.daos._
 import javax.inject.{Inject, Singleton}
 
-import models.entities.Product
+import models.entities.{Product, Stock}
 import play.api.data._
 import play.api.data.Forms._
 import play.api.Play.current
-
 import play.api.i18n.Messages.Implicits._
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ProductsController @Inject()(productDAO: ProductDAO)(implicit ec: ExecutionContext) extends Controller{
+class ProductsController @Inject()(productDAO: ProductDAO, stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
 
     val productForm = Form(
         mapping(
@@ -45,6 +47,12 @@ class ProductsController @Inject()(productDAO: ProductDAO)(implicit ec: Executio
             product => {
                 /* insertar el room en la base dato*/
                 productDAO.insert(product).map{ id =>
+                    val calendar = Calendar.getInstance()
+                    val currentDate = calendar.getTime
+
+                    val currentTimestamp: Timestamp = new Timestamp(currentDate.getTime)
+
+                    stockDAO.insert(Stock(0, id, 0, currentTimestamp))
                     Redirect(routes.ProductsController.products())
                 }
             }
