@@ -73,6 +73,36 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
         }
     )
 
+    def createCountsFromJSON = Action.async(BodyParsers.parse.json) { implicit request =>
+        val countResult = request.body.validate[CountDetails]
+
+        countResult.fold (
+            errors => {
+              Future(Redirect(routes.CountsController.counts()))
+            },
+
+            countDetails => {
+                val calendar = Calendar.getInstance()
+                val currentDate = calendar.getTime
+                val currentTimestamp: Timestamp = new Timestamp(currentDate.getTime)
+
+                countDAO.insert(Count(countDetails.countId, currentTimestamp, 0)).map {
+                    insertedCountId =>
+                        countDetails.countDetails.map(
+                            countDetail => {
+                                countDetailDAO.insert(countDetail.copy(countId = insertedCountId))
+                                stockDAO.insert(Stock(0, countDetail.productId, countDetail.quantity, currentTimestamp))
+                            }
+                        )
+                }
+
+                Future(Redirect(routes.CountsController.counts()))
+
+            }
+
+        )
+    }
+
     def createCounts = Action.async(implicit request =>
         countsForm.bindFromRequest().fold (
             formWithErrors => {
