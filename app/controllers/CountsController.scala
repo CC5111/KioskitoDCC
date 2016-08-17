@@ -6,11 +6,13 @@ import play.api.mvc._
 import models.daos._
 import javax.inject.{Inject, Singleton}
 
-import models.entities.{Count, CountDetailByProduct}
+import models.entities.{CaloriesPerCount, Count, CountDetailByProduct}
 import play.api.data._
 import play.api.data.Forms._
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -18,6 +20,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetailByProductDAO, stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
 
     case class CountDetails(countId: Long, countDetails: Seq[CountDetailByProduct])
+
+    implicit val placeWrites: Writes[CaloriesPerCount] = (
+            (JsPath \ "date").write[java.sql.Timestamp] and
+            (JsPath \ "totalCalories").write[Option[Int]]
+        )(unlift(CaloriesPerCount.unapply))
 
     val countsForm = Form(
         mapping (
@@ -68,5 +75,11 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
             }
         )
     )
+
+    def countsTotalCalories = Action.async{ implicit request =>
+            countDAO.totalCaloriesPerCount.map{calories =>
+                Ok(Json.toJson(calories))
+            }
+        }
 
 }

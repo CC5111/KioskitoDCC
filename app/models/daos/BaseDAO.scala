@@ -97,6 +97,23 @@ class CountDAO extends BaseDAO[CountTable, Count]{
 
     override protected val tableQ = SlickTables.countQ
 
+    def totalCaloriesPerCount : Future[Seq[CaloriesPerCount]] = {
+        val detailQ = SlickTables.countDetailQ
+        val productQ = SlickTables.productQ
+
+        val query = (for {
+            ((count, detail), product) <- tableQ join detailQ on (_.id === _.countId) join productQ on (_._2.productId === _.id)
+
+        } yield (count.date, detail, product))
+            .groupBy(_._1).map{
+            case (date, details) => (date, details.map(d => d._2.soldQuantity * d._3.calories).sum)
+        }
+
+        println(query.result.statements)
+        db.run(query.result).map{
+            res => res.map(x => CaloriesPerCount(x._1, x._2))
+        }
+    }
 }
 
 @Singleton
