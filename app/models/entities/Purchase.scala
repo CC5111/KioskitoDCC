@@ -11,6 +11,11 @@ case class CountDetailByProduct(id: Long, countId: Long, productId: Long, quanti
 case class Count(id: Long, date: java.sql.Timestamp, actualEarnings: Int) extends BaseEntity
 
 
+case class ShoppingList(purchaseId: Long, products: Seq[PurchasedProduct])
+case class PurchasedProduct(id: Long, productId: Long, packages: Int, quantityPerPackage: Int,
+                            pricePerPackage: Int, salePrice: Int)
+
+
 case class CountDetails(countId: Long, countDetails: Seq[CountDetailByProduct])
 
 case class CaloriesPerCount(date: java.sql.Timestamp, totalCalories: Option[Int])

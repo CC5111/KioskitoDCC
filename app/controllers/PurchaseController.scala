@@ -6,7 +6,7 @@ import play.api.mvc._
 import models.daos._
 import javax.inject.{Inject, Singleton}
 
-import models.entities.{Product, Purchase, PurchaseDetailByProduct}
+import models.entities._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.Play.current
@@ -20,9 +20,7 @@ import play.api.libs.functional.syntax._
 class PurchaseController @Inject()(periodDAO: PurchaseDAO, productDAO: ProductDAO, purchaseDetailDAO: ProductDetailByPeriodDAO,
                                    stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
 
-    case class ShoppingList(purchaseId: Long, products: Seq[PurchasedProduct])
-    case class PurchasedProduct(id: Long, productId: Long, packages: Int, quantityPerPackage: Int,
-                                pricePerPackage: Int, salePrice: Int)
+
 
     implicit val purchasedProductReads: Reads[PurchasedProduct] = (
             (JsPath \ "id").read[Long] and
