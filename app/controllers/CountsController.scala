@@ -6,23 +6,29 @@ import play.api.mvc._
 import models.daos._
 import javax.inject.{Inject, Singleton}
 
-import models.entities.{Count, CountDetailByProduct, Stock}
+import models.entities.{CaloriesPerCount, Count, CountDetailByProduct, Stock}
 import play.api.data._
 import play.api.data.Forms._
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetailByProductDAO, stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
 
-    case class CountDetails(countId: Long, actualEarnings: Int, countDetails: Seq[CountDetailByProduct])
+    case class CountDetails(countId: Long, countDetails: Seq[CountDetailByProduct])
+
+    implicit val placeWrites: Writes[CaloriesPerCount] = (
+            (JsPath \ "date").write[java.sql.Timestamp] and
+            (JsPath \ "totalCalories").write[Option[Int]]
+        )(unlift(CaloriesPerCount.unapply))
 
     val countsForm = Form(
         mapping (
             "countId" -> longNumber,
-            "actualEarnings" -> number,
             "countDetails" -> seq(
                 mapping(
                     "id" -> longNumber,
@@ -77,5 +83,11 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
             }
         )
     )
+
+    def countsTotalCalories = Action.async{ implicit request =>
+            countDAO.totalCaloriesPerCount.map{calories =>
+                Ok(Json.toJson(calories))
+            }
+        }
 
 }

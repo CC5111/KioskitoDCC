@@ -38,6 +38,21 @@ class ProductDAO extends BaseDAO[ProductTable, Product]{
         db.run(tableQ.result)
     }
 
+    def getAllWithStock : Future[Seq[(Product, Int)]] = {
+        val stockQ = SlickTables.stockQ
+
+        val query = for {
+            (product, stock) <- tableQ join stockQ on (_.id === _.productId)
+        } yield (product, stock)
+
+        db.run(query.result).map { results =>
+            val grouped: Map[(Long, Product), Seq[(Product, Stock)]] = results.groupBy(x => (x._1.id, x._1))
+            grouped.map{
+                case (prod, rest) => (prod._2, rest.map(_._2).sortBy(_.date.getTime).lastOption.map(_.stock).getOrElse(0))
+            }.toSeq
+        }
+    }
+
     def updateCurrentPrice(id: Long, newPrice: Int) = {
         val query = tableQ.filter(_.id === id).map(
             product => product.currentPrice
@@ -82,6 +97,23 @@ class CountDAO extends BaseDAO[CountTable, Count]{
 
     override protected val tableQ = SlickTables.countQ
 
+    def totalCaloriesPerCount : Future[Seq[CaloriesPerCount]] = {
+        val detailQ = SlickTables.countDetailQ
+        val productQ = SlickTables.productQ
+
+        val query = (for {
+            ((count, detail), product) <- tableQ join detailQ on (_.id === _.countId) join productQ on (_._2.productId === _.id)
+
+        } yield (count.date, detail, product))
+            .groupBy(_._1).map{
+            case (date, details) => (date, details.map(d => d._2.soldQuantity * d._3.calories).sum)
+        }
+
+        println(query.result.statements)
+        db.run(query.result).map{
+            res => res.map(x => CaloriesPerCount(x._1, x._2))
+        }
+    }
 }
 
 @Singleton
