@@ -23,11 +23,6 @@ object JsonReads {
         )(ShoppingList.apply _)
 
 
-    implicit val caloriesPerCountReads: Writes[CaloriesPerCount] = (
-        (JsPath \ "date").write[java.sql.Timestamp] and
-            (JsPath \ "totalCalories").write[Option[Int]]
-        )(unlift(CaloriesPerCount.unapply))
-
     implicit val countDetailsReads: Reads[CountDetails] = (
         (JsPath \ "countId").read[Long] and
             (JsPath \ "countDetails").read[Seq[CountDetailByProduct]]
