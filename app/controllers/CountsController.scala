@@ -26,6 +26,21 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
             (JsPath \ "totalCalories").write[Option[Int]]
         )(unlift(CaloriesPerCount.unapply))
 
+    implicit val countDetailsReads: Reads[CountDetails] = (
+        (JsPath \ "countId").read[Long] and
+            (JsPath \ "countDetails").read[Seq[CountDetailByProduct]]
+        )(CountDetails.apply _)
+
+    implicit val countDetailByProductReads: Reads[CountDetailByProduct] = (
+        (JsPath \ "id").read[Long] and
+        (JsPath \ "countId").read[Long] and
+        (JsPath \ "productId").read[Long] and
+        (JsPath \ "quantity").read[Int] and
+        (JsPath \ "soldQuantity").read[Int] and
+        (JsPath \ "sellingPrice").read[Int]
+
+        )(CountDetailByProduct.apply _)
+
     val countsForm = Form(
         mapping (
             "countId" -> longNumber,
@@ -68,7 +83,7 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
                 val currentDate = calendar.getTime
                 val currentTimestamp: Timestamp = new Timestamp(currentDate.getTime)
 
-                countDAO.insert(Count(countDetails.countId, currentTimestamp, countDetails.actualEarnings)).map {
+                countDAO.insert(Count(countDetails.countId, currentTimestamp, 0)).map {
                     insertedCountId =>
                         countDetails.countDetails.map(
                             countDetail => {
