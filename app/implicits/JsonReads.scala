@@ -1,6 +1,6 @@
 package implicits
 
-import models.entities.{CaloriesPerCount, CountDetailByProduct, CountDetails}
+import models.entities._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Reads, Writes}
 
@@ -8,6 +8,21 @@ import play.api.libs.json.{JsPath, Reads, Writes}
   *
   */
 object JsonReads {
+    implicit val purchasedProductReads: Reads[PurchasedProduct] = (
+        (JsPath \ "id").read[Long] and
+            (JsPath \ "productId").read[Long] and
+            (JsPath \ "packages").read[Int] and
+            (JsPath \ "quantityPerPackage").read[Int] and
+            (JsPath \ "pricePerPackage").read[Int] and
+            (JsPath \ "salePrice").read[Int]
+        )(PurchasedProduct.apply _)
+
+    implicit val shoppingListReads: Reads[ShoppingList] = (
+        (JsPath \ "purchaseId").read[Long] and
+            (JsPath \ "products").read[Seq[PurchasedProduct]]
+        )(ShoppingList.apply _)
+
+
     implicit val placeWrites: Writes[CaloriesPerCount] = (
         (JsPath \ "date").write[java.sql.Timestamp] and
             (JsPath \ "totalCalories").write[Option[Int]]

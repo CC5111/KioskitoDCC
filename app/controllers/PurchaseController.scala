@@ -16,27 +16,11 @@ import scala.concurrent.{ExecutionContext, Future}
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
+import implicits.JsonReads.{shoppingListReads, placeWrites}
+
 @Singleton
 class PurchaseController @Inject()(periodDAO: PurchaseDAO, productDAO: ProductDAO, purchaseDetailDAO: ProductDetailByPeriodDAO,
                                    stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
-
-
-
-    implicit val purchasedProductReads: Reads[PurchasedProduct] = (
-            (JsPath \ "id").read[Long] and
-            (JsPath \ "productId").read[Long] and
-            (JsPath \ "packages").read[Int] and
-            (JsPath \ "quantityPerPackage").read[Int] and
-            (JsPath \ "pricePerPackage").read[Int] and
-            (JsPath \ "salePrice").read[Int]
-        )(PurchasedProduct.apply _)
-
-    implicit val shoppingListReads: Reads[ShoppingList] = (
-            (JsPath \ "purchaseId").read[Long] and
-            (JsPath \ "products").read[Seq[PurchasedProduct]]
-        )(ShoppingList.apply _)
-
-
 
     val purchaseForm = Form(
         mapping(
