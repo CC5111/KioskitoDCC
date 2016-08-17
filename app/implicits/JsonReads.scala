@@ -23,7 +23,7 @@ object JsonReads {
         )(ShoppingList.apply _)
 
 
-    implicit val placeWrites: Writes[CaloriesPerCount] = (
+    implicit val caloriesPerCountReads: Writes[CaloriesPerCount] = (
         (JsPath \ "date").write[java.sql.Timestamp] and
             (JsPath \ "totalCalories").write[Option[Int]]
         )(unlift(CaloriesPerCount.unapply))

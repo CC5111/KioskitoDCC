@@ -15,7 +15,7 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import scala.concurrent.{ExecutionContext, Future}
-import implicits.JsonReads.{countDetailByProductReads, countDetailsReads, placeWrites}
+import implicits.JsonReads.{countDetailByProductReads, countDetailsReads, caloriesPerCountReads}
 
 @Singleton
 class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetailByProductDAO, stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
