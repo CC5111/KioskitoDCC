@@ -25,6 +25,7 @@ object JsonReads {
 
     implicit val countDetailsReads: Reads[CountDetails] = (
         (JsPath \ "countId").read[Long] and
+            (JsPath \ "actualEarnings").read[Int] and
             (JsPath \ "countDetails").read[Seq[CountDetailByProduct]]
         )(CountDetails.apply _)
 

@@ -16,6 +16,6 @@ case class PurchasedProduct(id: Long, productId: Long, packages: Int, quantityPe
                             pricePerPackage: Int, salePrice: Int)
 
 
-case class CountDetails(countId: Long, countDetails: Seq[CountDetailByProduct])
+case class CountDetails(countId: Long, actualEarnings: Int, countDetails: Seq[CountDetailByProduct])
 
 case class CaloriesPerCount(date: java.sql.Timestamp, totalCalories: Option[Int])
