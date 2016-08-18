@@ -36,6 +36,7 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
     def createCounts = Action.async(BodyParsers.parse.json) { implicit request =>
         val countResult = request.body.validate[CountDetails]
 
+        println(countResult)
         countResult.fold (
             errors => {
               Future(Redirect(routes.CountsController.counts()))
@@ -46,7 +47,7 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
                 val currentDate = calendar.getTime
                 val currentTimestamp: Timestamp = new Timestamp(currentDate.getTime)
 
-                countDAO.insert(Count(countDetails.countId, currentTimestamp, 0)).map {
+                countDAO.insert(Count(countDetails.countId, currentTimestamp, countDetails.actualEarnings)).map {
                     insertedCountId =>
                         countDetails.countDetails.map(
                             countDetail => {

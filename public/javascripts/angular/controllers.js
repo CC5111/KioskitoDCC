@@ -62,14 +62,14 @@ app.controller('newCountCtrl', function($scope, $http){
      $http.get('/get-products-with-stock').success(function (data) {
                 $scope.form =
                 {
-                    id: 0,
+                    countId: 0,
                     actualEarnings: 0,
-                    products: []
+                    countDetails: []
                 };
 
                 for (var i = 0; i < data.length; i++){
                     var product = data[i];
-                    $scope.form.products.push({
+                    $scope.form.countDetails.push({
                         id: 0,
                         productId: product.id,
                         product: product.product,
@@ -82,11 +82,9 @@ app.controller('newCountCtrl', function($scope, $http){
             });
 
             $scope.submitForm = function () {
-                for (var i = 0; i < $scope.bag.length; i++) {
-                    $scope.bag[i].productId = $scope.findProductId($scope.bag[i].name)
-                }
                 console.log(JSON.stringify($scope.form));
                 console.log($scope.form);
+
                 $http.post('/compras/crear', $scope.form).success(function () {/*success callback*/
                 });
             };
