@@ -16,7 +16,8 @@ import scala.concurrent.{ExecutionContext, Future}
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-import implicits.JsonReads.{shoppingListReads, caloriesPerCountReads}
+import implicits.JsonReads.{shoppingListReads}
+import implicits.JsonWrites.caloriesPerCountReads
 
 @Singleton
 class PurchaseController @Inject()(periodDAO: PurchaseDAO, productDAO: ProductDAO, purchaseDetailDAO: ProductDetailByPeriodDAO,
