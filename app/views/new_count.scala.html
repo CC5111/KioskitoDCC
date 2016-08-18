@@ -1,22 +1,39 @@
-@(stocks: List[models.entities.ProductWithStock])(implicit msg: play.api.i18n.Messages)
+@()(implicit msg: play.api.i18n.Messages)
 
-@main("Productos", 5) {
-<h1>PRODUCTOS</h1>
-<table class="table table-striped">
-    <thead>
-    <th>Nombre</th>
-    <th>Id</th>
-    <th>Stock</th>
-    </thead>
-    <tbody>
-    @for(product <- stocks) {
-    <tr>
-        <td>@product.product</td>
-        <td>@product.id</td>
-        <td>@product.stock</td>
-    </tr>
-    }
-    </tbody>
-</table>
+@main("Nuevo Conteo", 3) {
+<div ng-controller="newCountCtrl">
+    <h1>Nuevo Conteo</h1>
 
+    <div>
+        <form name="newCount" action="#" ng-submit="submitForm()">
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Stock anterior</th>
+                    <th>Stock actual</th>
+                    <th>Vendido</th>
+                    <th>Precio</th>
+                    <th>Ganancias esperadas</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="product in form.products">
+                    <td>{{ product.product }}</td>
+                    <td>{{ product.previousStock }}</td>
+                    <td><input class="form-control input-sm" type="number" ng-model="product.remainingQuantity"></td>
+                    <td>{{ product.previousStock - product.remainingQuantity }}</td>
+                    <td>{{ product.salePrice }}</td>
+                    <td>{{ product.salePrice * (product.previousStock - product.remainingQuantity)}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <label for="actual-earnings">Ganancias Reales</label>
+            <input id="actual-earnings" class="form-control input" type="number" ng-model="form.actualEarnings">
+
+            <input type="submit">
+        </form>
+    </div>
+    {{form}}
+</div>
 }
