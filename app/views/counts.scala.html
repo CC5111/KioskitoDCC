@@ -1,4 +1,4 @@
-@(earningsPerDate: List[Tuple2[java.sql.Timestamp, Option[Int]]])(implicit msg: play.api.i18n.Messages)
+@(earningsPerDate: List[(java.sql.Timestamp, Int, Option[Int])])(implicit msg: play.api.i18n.Messages)
 
 
 @main("Conteos",3) {
@@ -9,13 +9,15 @@
   <table class="table table-striped">
     <thead>
       <th>Conteo</th>
-      <th>Vendido</th>
+      <th>Real</th>
+      <th>Esperado</th>
     </thead>
     <tbody>
     @for(earnings <- earningsPerDate) {
       <tr>
         <td>@earnings._1</td>
         <td>@earnings._2</td>
+        <td>@earnings._3</td>
       </tr>
     }
     </tbody>
