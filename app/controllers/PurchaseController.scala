@@ -27,7 +27,7 @@ class PurchaseController @Inject()(purchaseDAO: PurchaseDAO, productDAO: Product
         purchaseDAO.getPeriodsTotalCost.map{ p => {
               val purchases = p.map(x => PurchaseTotalCost(x._1, x._2, x._3))
 
-              Ok(views.html.purchases(purchases.toList))
+              Ok(views.html.purchases(purchases.toList.sortBy(_.date.getTime).reverse))
             }
         }
     }
