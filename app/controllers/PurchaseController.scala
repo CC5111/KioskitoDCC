@@ -66,7 +66,7 @@ class PurchaseController @Inject()(periodDAO: PurchaseDAO, productDAO: ProductDA
     }
 
     def purchase(id: Long) = Action.async{ implicit request =>
-        periodDAO.productDetail(id).map{purchaseDetail =>
+        periodDAO.purchaseDetail(id).map{ purchaseDetail =>
             Ok(views.html.purchase(purchaseDetail))
         }
     }

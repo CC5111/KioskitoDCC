@@ -1,32 +1,33 @@
-@(purchaseDetail: (Option[models.entities.Purchase], Seq[models.entities.PurchaseDetailByProduct]))(implicit msg: play.api.i18n.Messages)
+@(purchaseDetail: (Option[models.entities.Purchase], Seq[(String, models.entities.PurchaseDetailByProduct)]))(implicit msg: play.api.i18n.Messages)
 
 
 @main("Detalle Compra", 2) {
-    <p> @for(purchase <- purchaseDetail._1) {
-        Fecha:  @purchase.date
-        }
-    </p>
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Paquetes</th>
-                <th>Cant/Paquete</th>
-                <th>Precio/Paquete</th>
-                <th>Precio Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for(product <- purchaseDetail._2){
-            <tr>
-                <td>@product.productId</td>
-                <td>@product.numberOfPackages</td>
-                <td>@product.quantityByPackage</td>
-                <td>@product.pricePerPackage</td>
-                <td>@{product.pricePerPackage*product.numberOfPackages}</td>
-            </tr>
-            }
-        </tbody>
-    </table>
+
+<p> @for(purchase <- purchaseDetail._1) {
+    Fecha:  @purchase.date
+    }
+</p>
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Paquetes</th>
+        <th>Cant/Paquete</th>
+        <th>Precio/Paquete</th>
+        <th>Precio Total</th>
+    </tr>
+    </thead>
+    <tbody>
+    @for(product <- purchaseDetail._2){
+    <tr>
+        <td>@product._1</td>
+        <td>@product._2.numberOfPackages</td>
+        <td>@product._2.quantityByPackage</td>
+        <td>@product._2.pricePerPackage</td>
+        <td>@{product._2.pricePerPackage * product._2.numberOfPackages}</td>
+    </tr>
+    }
+    </tbody>
+</table>
 
 }

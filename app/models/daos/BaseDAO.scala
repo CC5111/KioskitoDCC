@@ -74,27 +74,32 @@ class PurchaseDAO extends BaseDAO[PurchaseTable, Purchase]{
   }
 
 
-    def getPeriodsTotalCost: Future[Seq[(java.sql.Timestamp, Option[Int])]] = {
+    def getPeriodsTotalCost: Future[Seq[(Long, java.sql.Timestamp, Option[Int])]] = {
         val detailQ = SlickTables.purchaseDetailQ
 
         val query = (for {
             (period, detail) <- tableQ join detailQ on (_.id === _.purchaseId)
-        } yield (period.date, detail))
-            .groupBy(_._1).map {
-                case (date, pairs) => (date, pairs.map(x => x._2.pricePerPackage * x._2.numberOfPackages).sum)
+        } yield (period, detail))
+            .groupBy(x => (x._1.date, x._1.id)).map {
+                case (purchase, pairs) => (purchase._2, purchase._1, pairs.map(x => x._2.pricePerPackage * x._2.numberOfPackages).sum)
             }
 
         println(query.result.statements: Iterable[String])
         db.run(query.result)
     }
 
-    def productDetail(id: Long) : Future[(Option[Purchase], Seq[PurchaseDetailByProduct])] = {
+    def purchaseDetail(id: Long) : Future[(Option[Purchase], Seq[(String, PurchaseDetailByProduct)])] = {
         val detailQ = SlickTables.purchaseDetailQ
+        val productQ = SlickTables.productQ
 
-        val purchaseDetails = detailQ.filter(_.purchaseId === id)
+        val purchaseDetails = for {
+            detail <- detailQ if detail.purchaseId === id
+            product <- detail.product
+        } yield (product.product, detail)
 
         findById(id).flatMap{purchase =>
             db.run(purchaseDetails.result).map{details =>
+
                 (purchase, details)
             }
         }
