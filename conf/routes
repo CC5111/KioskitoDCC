@@ -6,7 +6,7 @@ GET     /productos                  controllers.ProductsController.products
 POST    /create                     controllers.ProductsController.createProduct
 
 GET     /compras                    controllers.PurchaseController.purchases
-GET     /compras/nueva              controllers.NewPurchaseController.newPurchase
+GET     /compras/nueva              controllers.PurchaseController.newPurchase
 POST    /compras/crear              controllers.PurchaseController.createPurchase
 GET     /compras/:id                controllers.PurchaseController.purchase(id: Long)
 
@@ -21,7 +21,7 @@ GET     /calsConsumidas             controllers.ChartsController.consCalories
 
 
 # JSON
-GET     /getProductsNames           controllers.NewPurchaseController.getProductsNames
+GET     /getProductsNames           controllers.PurchaseController.getProductsNames
 GET     /get-products-with-stock    controllers.ProductsController.productsWithStock
 GET     /calories-per-count         controllers.CountsController.countsTotalCalories
 
