@@ -6,5 +6,27 @@
         Fecha:  @purchase.date
         }
     </p>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Paquetes</th>
+                <th>Cant/Paquete</th>
+                <th>Precio/Paquete</th>
+                <th>Precio Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(product <- purchaseDetail._2){
+            <tr>
+                <td>@product.productId</td>
+                <td>@product.numberOfPackages</td>
+                <td>@product.quantityByPackage</td>
+                <td>@product.pricePerPackage</td>
+                <td>@{product.pricePerPackage*product.numberOfPackages}</td>
+            </tr>
+            }
+        </tbody>
+    </table>
 
 }
