@@ -35,18 +35,6 @@ class PurchaseController @Inject()(purchaseDAO: PurchaseDAO, productDAO: Product
     def newPurchase = Action(implicit request =>
         Ok(views.html.newPurchase()))
 
-    def getProductsNames = Action.async{ implicit request =>
-        productDAO.all.map{ products =>
-            val json = products.map{
-                product => Json.obj(
-                    "name" -> product.product,
-                    "id" -> product.id
-                )
-            }
-            Ok(Json.toJson(json)).as(JSON)
-        }
-    }
-
     def createPurchase = Action.async(BodyParsers.parse.json) { implicit request =>
         val purchaseResult = request.body.validate[ShoppingList]
 

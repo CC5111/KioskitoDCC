@@ -21,7 +21,7 @@ GET     /calsConsumidas             controllers.ChartsController.consCalories
 
 
 # JSON
-GET     /getProductsNames           controllers.PurchaseController.getProductsNames
+GET     /getProductsNames           controllers.ProductsController.getProductsNames
 GET     /get-products-with-stock    controllers.ProductsController.productsWithStock
 GET     /calories-per-count         controllers.CountsController.countsTotalCalories
 
