@@ -15,7 +15,7 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import scala.concurrent.{ExecutionContext, Future}
-import implicits.JsonReads.{countDetailByProductReads, countDetailsReads}
+import implicits.JsonReads.{countDetailsReads, countDetailByProductReads}
 import implicits.JsonWrites.{caloriesPerCountReads}
 
 @Singleton
@@ -33,13 +33,15 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
         }
     )
 
-    def createCounts = Action.async(BodyParsers.parse.json) { implicit request =>
+
+    def createCount = Action.async(BodyParsers.parse.json) { implicit request =>
+        println(request.body)
         val countResult = request.body.validate[CountDetails]
 
         println(countResult)
         countResult.fold (
             errors => {
-              Future(Redirect(routes.CountsController.counts()))
+                Future(BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors))))
             },
 
             countDetails => {
@@ -47,17 +49,18 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
                 val currentDate = calendar.getTime
                 val currentTimestamp: Timestamp = new Timestamp(currentDate.getTime)
 
-                countDAO.insert(Count(countDetails.countId, currentTimestamp, countDetails.actualEarnings)).map {
+                countDAO.insert(Count(0, currentTimestamp, countDetails.actualEarnings)).map {
                     insertedCountId =>
                         countDetails.countDetails.map(
                             countDetail => {
-                                countDetailDAO.insert(countDetail.copy(countId = insertedCountId))
-                                stockDAO.insert(Stock(0, countDetail.productId, countDetail.quantity, currentTimestamp))
+                                countDetailDAO.insert(CountDetailByProduct(0, insertedCountId, countDetail.productId,
+                                    countDetail.remainingQuantity, countDetail.soldQuantity, countDetail.salePrice))
+                                stockDAO.insert(Stock(0, countDetail.productId, countDetail.remainingQuantity, currentTimestamp))
                             }
                         )
                 }
 
-                Future(Redirect(routes.CountsController.counts()))
+                Future(Ok(Json.obj("status" ->"OK", "message" -> ("Count '"+ countDetails +"' saved.") )))
 
             }
 

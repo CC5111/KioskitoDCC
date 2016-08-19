@@ -2,7 +2,7 @@ package implicits
 
 import models.entities._
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Reads, Writes}
+import play.api.libs.json.{JsPath, Reads}
 
 /**
   *
@@ -22,20 +22,16 @@ object JsonReads {
             (JsPath \ "products").read[Seq[PurchasedProduct]]
         )(ShoppingList.apply _)
 
+    implicit val countDetailByProductReads: Reads[PartialCountDetail] = (
+        (JsPath \ "productId").read[Long] and
+            (JsPath \ "remainingQuantity").read[Int] and
+            (JsPath \ "soldQuantity").read[Int] and
+            (JsPath \ "salePrice").read[Int]
+
+        )(PartialCountDetail.apply _)
 
     implicit val countDetailsReads: Reads[CountDetails] = (
-        (JsPath \ "countId").read[Long] and
-            (JsPath \ "actualEarnings").read[Int] and
-            (JsPath \ "countDetails").read[Seq[CountDetailByProduct]]
+        (JsPath \ "actualEarnings").read[Int] and
+            (JsPath \ "countDetails").read[Seq[PartialCountDetail]]
         )(CountDetails.apply _)
-
-    implicit val countDetailByProductReads: Reads[CountDetailByProduct] = (
-        (JsPath \ "id").read[Long] and
-            (JsPath \ "countId").read[Long] and
-            (JsPath \ "productId").read[Long] and
-            (JsPath \ "quantity").read[Int] and
-            (JsPath \ "soldQuantity").read[Int] and
-            (JsPath \ "sellingPrice").read[Int]
-
-        )(CountDetailByProduct.apply _)
 }
