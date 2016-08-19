@@ -143,15 +143,15 @@ class CountDetailByProductDAO extends BaseDAO[CountDetailByProductTable, CountDe
     db.run(tableQ.result)
   }
 
-    def getCountsWithEarnings(): Future[Seq[(java.sql.Timestamp, Int, Option[Int])]] = {
+    def getCountsWithEarnings(): Future[Seq[(Long, java.sql.Timestamp, Int, Option[Int])]] = {
         val countQ = SlickTables.countQ
 
         val query = (for {
             count <- countQ
             detail <- tableQ if detail.countId === count.id
         } yield (count, detail))
-            .groupBy(x=> (x._1.date,x._1.actualEarnings)).map {
-                case (dateAndActualEarn, countDetail) => (dateAndActualEarn._1, dateAndActualEarn._2, countDetail.map(x => x._2.soldQuantity * x._2.sellingPrice).sum)
+            .groupBy(x=> (x._1.date, x._1.id, x._1.actualEarnings)).map {
+                case (dateAndActualEarn, countDetail) => (dateAndActualEarn._2, dateAndActualEarn._1, dateAndActualEarn._3, countDetail.map(x => x._2.soldQuantity * x._2.sellingPrice).sum)
             }
 
         println(query.result.statements: Iterable[String])
