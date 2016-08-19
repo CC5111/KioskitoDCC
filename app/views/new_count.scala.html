@@ -21,15 +21,32 @@
                 <tr ng-repeat="product in form.countDetails">
                     <td>{{ product.product }}</td>
                     <td>{{ product.previousStock }}</td>
-                    <td><input class="form-control input-sm" type="number" ng-model="product.remainingQuantity"></td>
-                    <td>{{ product.previousStock - product.remainingQuantity }}</td>
+                    <td><input class="form-control input-sm" type="number" ng-model="product.remainingQuantity"
+                        ng-change="updateExpectedEarnings($index)"></td>
+                    <td>{{ product.soldQuantity }}</td>
                     <td>{{ product.salePrice }}</td>
-                    <td>{{ product.salePrice * (product.previousStock - product.remainingQuantity)}}</td>
+                    <td>{{ expectedEarnings[$index] }}</td>
                 </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><b>Total:</b></td>
+                        <td><b>{{ expectedSum }}</b></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><b>Ganancias Reales:</b></td>
+                        <td><input class="form-control input-sm" type="number" ng-model="form.actualEarnings"></td>
+                    </tr>
                 </tbody>
             </table>
-            <label for="actual-earnings">Ganancias Reales</label>
-            <input id="actual-earnings" class="form-control input" type="number" ng-model="form.actualEarnings">
+
+
 
             <input type="submit">
         </form>
