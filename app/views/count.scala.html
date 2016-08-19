@@ -1,0 +1,59 @@
+@(countDetail: (Option[models.entities.Count], Seq[(String, models.entities.CountDetailByProduct)], Int))(implicit msg: play.api.i18n.Messages)
+
+
+@main("Detalle Compra", 2) {
+@for(count <- countDetail._1) {
+<p>
+    Fecha:  @count.date
+
+</p>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Anterior</th>
+        <th>Actual</th>
+        <th>Vendido</th>
+        <th>Precio Venta</th>
+        <th>Precio Total</th>
+    </tr>
+    </thead>
+    <tbody>
+    @for(product <- countDetail._2){
+    <tr>
+        <td>@product._1</td>
+        <td>@(product._2.quantity + product._2.soldQuantity)</td>
+        <td>@product._2.quantity</td>
+        <td>@product._2.soldQuantity</td>
+        <td>@product._2.salePrice</td>
+        <td>@(product._2.soldQuantity*product._2.salePrice)</td>
+    </tr>
+    }
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><b>Ganancia Esperada</b></td>
+        <td><b>@countDetail._3</b></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><b>Ganancia Real</b></td>
+        <td><b>@count.actualEarnings</b></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><b>Diferencia</b></td>
+        <td><b>@(count.actualEarnings-countDetail._3)</b></td>
+    </tr>
+    </tbody>
+</table>
+}
+}

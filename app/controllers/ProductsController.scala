@@ -66,4 +66,16 @@ class ProductsController @Inject()(productDAO: ProductDAO, stockDAO: StockDAO)(i
             Ok(Json.toJson(products))
         }
     }
+
+    def getProductsNames = Action.async{ implicit request =>
+        productDAO.all.map{ products =>
+            val json = products.map{
+                product => Json.obj(
+                    "name" -> product.product,
+                    "id" -> product.id
+                )
+            }
+            Ok(Json.toJson(json)).as(JSON)
+        }
+    }
 }

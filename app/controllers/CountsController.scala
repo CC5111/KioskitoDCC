@@ -27,6 +27,13 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
         }
     )
 
+    def count(id: Long) = Action.async{ implicit request =>
+        countDAO.countDetail(id).map{ count =>
+            val expectedEarnings = count._2.map(x => x._2.soldQuantity * x._2.salePrice).sum
+            Ok(views.html.count((count._1, count._2, expectedEarnings)))
+        }
+    }
+
     def newCount() = Action.async(implicit request =>
         stockDAO.getLastWithPositiveStock.map { stocks =>
             Ok(views.html.new_count())
@@ -70,6 +77,19 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
     def countsTotalCalories = Action.async{ implicit request =>
             countDAO.totalCaloriesPerCount.map{calories =>
                 Ok(Json.toJson(calories))
+            }
+        }
+
+    def dateActualExpEarnings = Action.async{ implicit request =>
+            countDetailDAO.getCountsWithEarnings().map{ data =>
+                val json = data.map{
+                    d => Json.obj(
+                        "date" -> d._1,
+                        "actual" -> d._2,
+                        "expected" -> d._3
+                    )
+                }
+                Ok(Json.toJson(json))
             }
         }
 

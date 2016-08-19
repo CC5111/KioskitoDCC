@@ -114,6 +114,23 @@ class CountDAO extends BaseDAO[CountTable, Count]{
 
     override protected val tableQ = SlickTables.countQ
 
+    def countDetail(id: Long) : Future[(Option[Count], Seq[(String, CountDetailByProduct)])] = {
+        val detailQ = SlickTables.countDetailQ
+
+        val countDetails = for {
+            detail <- detailQ if detail.countId === id
+            product <- detail.product
+        } yield (product.product, detail)
+
+        findById(id).flatMap{count =>
+            db.run(countDetails.result).map{details =>
+
+                (count, details)
+            }
+        }
+
+    }
+
     def totalCaloriesPerCount : Future[Seq[CaloriesPerCount]] = {
         val detailQ = SlickTables.countDetailQ
         val productQ = SlickTables.productQ
@@ -143,15 +160,15 @@ class CountDetailByProductDAO extends BaseDAO[CountDetailByProductTable, CountDe
     db.run(tableQ.result)
   }
 
-    def getCountsWithEarnings(): Future[Seq[(java.sql.Timestamp, Option[Int])]] = {
+    def getCountsWithEarnings(): Future[Seq[(Long, java.sql.Timestamp, Int, Option[Int])]] = {
         val countQ = SlickTables.countQ
 
         val query = (for {
             count <- countQ
             detail <- tableQ if detail.countId === count.id
-        } yield (count.date, detail))
-            .groupBy(_._1).map {
-                case (date, countDetail) => (date, countDetail.map(x => x._2.soldQuantity * x._2.sellingPrice).sum)
+        } yield (count, detail))
+            .groupBy(x=> (x._1.date, x._1.id, x._1.actualEarnings)).map {
+                case (dateAndActualEarn, countDetail) => (dateAndActualEarn._2, dateAndActualEarn._1, dateAndActualEarn._3, countDetail.map(x => x._2.soldQuantity * x._2.sellingPrice).sum)
             }
 
         println(query.result.statements: Iterable[String])

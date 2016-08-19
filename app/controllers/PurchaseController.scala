@@ -20,14 +20,20 @@ import implicits.JsonReads.{shoppingListReads}
 import implicits.JsonWrites.caloriesPerCountReads
 
 @Singleton
-class PurchaseController @Inject()(periodDAO: PurchaseDAO, productDAO: ProductDAO, purchaseDetailDAO: ProductDetailByPeriodDAO,
+class PurchaseController @Inject()(purchaseDAO: PurchaseDAO, productDAO: ProductDAO, purchaseDetailDAO: ProductDetailByPeriodDAO,
                                    stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
 
     def purchases() = Action.async{ implicit request =>
-        periodDAO.getPeriodsTotalCost.map{ purchases =>
-            Ok(views.html.purchases(purchases.toList))
+        purchaseDAO.getPeriodsTotalCost.map{ p => {
+              val purchases = p.map(x => PurchaseTotalCost(x._1, x._2, x._3))
+
+              Ok(views.html.purchases(purchases.toList.sortBy(_.date.getTime).reverse))
+            }
         }
     }
+
+    def newPurchase = Action(implicit request =>
+        Ok(views.html.newPurchase()))
 
     def createPurchase = Action.async(BodyParsers.parse.json) { implicit request =>
         val purchaseResult = request.body.validate[ShoppingList]
@@ -45,7 +51,7 @@ class PurchaseController @Inject()(periodDAO: PurchaseDAO, productDAO: ProductDA
 
                 val currentTimestamp: Timestamp = new Timestamp(currentDate.getTime)
 
-                val insertedPurchase: Future[Long] = periodDAO.insert(Purchase(shoppingList.purchaseId, currentTimestamp))
+                val insertedPurchase: Future[Long] = purchaseDAO.insert(Purchase(shoppingList.purchaseId, currentTimestamp))
 
                 insertedPurchase.map(purchaseId => {
                     shoppingList.products.map(x => {
@@ -66,7 +72,7 @@ class PurchaseController @Inject()(periodDAO: PurchaseDAO, productDAO: ProductDA
     }
 
     def purchase(id: Long) = Action.async{ implicit request =>
-        periodDAO.purchaseDetail(id).map{ purchaseDetail =>
+        purchaseDAO.purchaseDetail(id).map{ purchaseDetail =>
             Ok(views.html.purchase(purchaseDetail))
         }
     }

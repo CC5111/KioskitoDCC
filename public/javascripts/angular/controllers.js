@@ -108,7 +108,7 @@ app.controller('newCountCtrl', function ($scope, $http) {
     };
 });
 
-app.controller('expectedVsActualChartCtrl', function($scope){
+app.controller('expectedVsActualChartCtrl', function($scope, $http){
     $scope.options = {
         chart: {
             type: 'multiBarChart',
@@ -143,14 +143,30 @@ app.controller('expectedVsActualChartCtrl', function($scope){
         }
     };
 
+    var actualEarningsData = [];
+    var expectedEarningsData = [];
+
+
+    $http.get('/actual-expected-earnings').success(function (data) {
+            for (var i = 0; i < data.length; i++) {
+                actualEarningsData.push([data[i].date, data[i].actual]);
+                expectedEarningsData.push([data[i].date, data[i].expected]);
+            }
+            console.log(JSON.stringify(data));
+            console.log(data);
+        });
+
+
+
     $scope.data = [
-        {
-            key: 'Esperado',
-            values:[[1028088000000,1], [1028088085588,1], [1028098085588,6]]
-        },
+
         {
             key: 'Real',
-            values: [[1028088000000,3], [1028088085588,5], [1028098085588,5]]
+            values: actualEarningsData
+        },
+        {
+            key: 'Esperado',
+            values: expectedEarningsData
         }
     ];
 
@@ -161,6 +177,7 @@ app.controller('lossRatioChartCtrl', function($scope, $http) {
 })
 
 app.controller('soldProductsChartCtrl', function ($scope) {
+
 
     $scope.options = {
         chart: {
@@ -197,15 +214,7 @@ app.controller('soldProductsChartCtrl', function ($scope) {
                     return d3.format(',f')(d);
                 }
             },
-            zoom: {
-                enabled: false,
-                scaleExtent: [1, 10],
-                useFixedDomain: false,
-                useNiceScale: false,
-                horizontalOff: false,
-                verticalOff: true,
-                unzoomEventType: 'dblclick.zoom'
-            }
+
         },
         title: {
             enable: true,

@@ -20,3 +20,6 @@ case class CountDetails(actualEarnings: Int, countDetails: Seq[PartialCountDetai
 case class PartialCountDetail(productId: Long, remainingQuantity: Int, soldQuantity: Int, salePrice: Int)
 
 case class CaloriesPerCount(date: java.sql.Timestamp, totalCalories: Option[Int])
+
+
+case class PurchaseTotalCost(id: Long, date: java.sql.Timestamp, totalCost: Option[Int])
