@@ -214,81 +214,6 @@ app.controller('lossRatioChartCtrl', function($scope, $http) {
 
 app.controller('soldProductsChartCtrl', function ($scope) {
 
-
-});
-
-app.controller('totalConsCaloriesChartCtrl', function($scope, $http){
-    $scope.options = {
-        chart: {
-            type: 'lineChart',
-            height: 450,
-            margin: {
-                top: 20,
-                right: 20,
-                bottom: 50,
-                left: 60
-            },
-            x: function (d) {
-                return d[0];
-            },
-            y: function (d) {
-                return d[1];
-            },
-            useInteractiveGuideline: true,
-            showLegend: false,
-            dispatch: {
-                stateChange: function (e) {
-                    console.log("stateChange");
-                },
-                changeState: function (e) {
-                    console.log("changeState");
-                },
-                tooltipShow: function (e) {
-                    console.log("tooltipShow");
-                },
-                tooltipHide: function (e) {
-                    console.log("tooltipHide");
-                }
-            },
-            xAxis: {
-                axisLabel: 'Fecha',
-                tickFormat: function (d) {
-                    return d3.time.format('%x')(new Date(d))
-                },
-                showMaxMin: false
-            },
-            yAxis: {
-                axisLabel: 'Calorías',
-                tickFormat: function (d) {
-                    return d3.format('.02f')(d);
-                },
-                showMaxMin: false
-            }
-        },
-        title: {
-            enable: true,
-            text: 'Total de calorías consumidas entre fechas'
-        }
-    };
-
-    var totalCalories = [];
-
-    $http.get('/calories-per-count').success(function (data) {
-        for (var i = 0; i < data.length; i++) {
-            totalCalories.push([data[i].date, data[i].totalCalories]);
-        }
-    });
-
-    $scope.data = [
-        {
-            "key": "Calorías",
-            "values": totalCalories
-        }
-    ]
-});
-
-app.controller('detailedConsCaloriesChartCtrl', function ($scope) {
-
     $scope.options = {
         chart: {
             type: 'stackedAreaChart',
@@ -312,16 +237,16 @@ app.controller('detailedConsCaloriesChartCtrl', function ($scope) {
             showControls: false,
             xAxis: {
                 axisLabel: 'Fecha',
-                showMaxMin: false,
+                showMaxMin: true,
                 tickFormat: function (d) {
                     return d3.time.format('%x')(new Date(d))
                 }
             },
             yAxis: {
-                axisLabel: 'Calorías',
+                axisLabel: 'Cantidad',
                 showMaxMin: false,
                 tickFormat: function (d) {
-                    return d3.format(',.2f')(d);
+                    return d3.format(',f')(d);
                 }
             },
             zoom: {
@@ -336,7 +261,7 @@ app.controller('detailedConsCaloriesChartCtrl', function ($scope) {
         },
         title: {
             enable: true,
-            text: 'Productos que más calorías aportan al consumo'
+            text: 'Productos más vendidos'
         }
     };
 
@@ -379,6 +304,78 @@ app.controller('detailedConsCaloriesChartCtrl', function ($scope) {
         }
 
     ]
+
+});
+
+app.controller('totalConsCaloriesChartCtrl', function($scope, $http){
+    $scope.options = {
+        chart: {
+            type: 'lineChart',
+            height: 450,
+            margin: {
+                top: 20,
+                right: 50,
+                bottom: 50,
+                left: 80
+            },
+            x: function (d) {
+                return d[0];
+            },
+            y: function (d) {
+                return d[1];
+            },
+            useInteractiveGuideline: true,
+            showLegend: false,
+
+            xAxis: {
+                axisLabel: 'Fecha',
+                axisLabelDistance: 10,
+                tickFormat: function (d) {
+                    return d3.time.format('%x')(new Date(d))
+                },
+                showMaxMin: true,
+                ticks:10,
+                tickPadding: 10
+
+            },
+
+            forceY: 0,
+            yAxis: {
+                axisLabel: 'Calorías',
+                axisLabelDistance: 5,
+
+                tickFormat: function (d) {
+                    return d3.format('.02f')(d);
+                },
+                showMaxMin: true,
+                ticks: 10
+            }
+        },
+        title: {
+            enable: true,
+            text: 'Total de calorías consumidas entre fechas'
+        }
+    };
+
+    var totalCalories = [];
+
+    $http.get('/calories-per-count').success(function (data) {
+        for (var i = 0; i < data.length; i++) {
+            totalCalories.push([data[i].date, data[i].totalCalories]);
+        }
+    });
+
+    $scope.data = [
+        {
+            "key": "Calorías",
+            "values": totalCalories
+        }
+    ]
+});
+
+app.controller('detailedConsCaloriesChartCtrl', function ($scope) {
+
+
 })
 
 
