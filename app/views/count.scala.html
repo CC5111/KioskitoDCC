@@ -1,13 +1,13 @@
-@(countDetail: (Option[models.entities.Count], Seq[(String, models.entities.CountDetailByProduct)]))(implicit msg: play.api.i18n.Messages)
+@(countDetail: (Option[models.entities.Count], Seq[(String, models.entities.CountDetailByProduct)], Int))(implicit msg: play.api.i18n.Messages)
 
 
 @main("Detalle Compra", 2) {
-
-<p> @for(count <- countDetail._1) {
+@for(count <- countDetail._1) {
+<p>
     Fecha:  @count.date
-    }
+
 </p>
-<table class="table table-bordered table-striped">
+<table class="table table-striped">
     <thead>
     <tr>
         <th>Nombre</th>
@@ -29,7 +29,31 @@
         <td>@(product._2.soldQuantity*product._2.salePrice)</td>
     </tr>
     }
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><b>Ganancia Esperada</b></td>
+        <td><b>@countDetail._3</b></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><b>Ganancia Real</b></td>
+        <td><b>@count.actualEarnings</b></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><b>Diferencia</b></td>
+        <td><b>@(count.actualEarnings-countDetail._3)</b></td>
+    </tr>
     </tbody>
 </table>
-
+}
 }

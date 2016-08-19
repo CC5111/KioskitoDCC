@@ -29,7 +29,8 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
 
     def count(id: Long) = Action.async{ implicit request =>
         countDAO.countDetail(id).map{ count =>
-            Ok(views.html.count(count))
+            val expectedEarnings = count._2.map(x => x._2.soldQuantity * x._2.salePrice).sum
+            Ok(views.html.count((count._1, count._2, expectedEarnings)))
         }
     }
 
