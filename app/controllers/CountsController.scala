@@ -23,7 +23,7 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
 
     def counts() = Action.async(implicit request =>
         countDetailDAO.getCountsWithEarnings().map { counts =>
-            Ok(views.html.counts(counts.toList))
+            Ok(views.html.counts(counts.toList.sortBy(_._2.getTime).reverse))
         }
     )
 
@@ -76,7 +76,8 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
 
     def countsTotalCalories = Action.async{ implicit request =>
             countDAO.totalCaloriesPerCount.map{calories =>
-                Ok(Json.toJson(calories))
+                val sorted: Seq[CaloriesPerCount] = calories.sortBy(_.date.getTime)
+                Ok(Json.toJson(sorted))
             }
         }
 
