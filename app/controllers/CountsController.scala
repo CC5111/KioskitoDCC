@@ -27,6 +27,12 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
         }
     )
 
+    def count(id: Long) = Action.async{ implicit request =>
+        countDAO.countDetail(id).map{ count =>
+            Ok(views.html.count(count))
+        }
+    }
+
     def newCount() = Action.async(implicit request =>
         stockDAO.getLastWithPositiveStock.map { stocks =>
             Ok(views.html.new_count())

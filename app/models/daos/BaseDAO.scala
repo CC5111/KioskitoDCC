@@ -114,6 +114,23 @@ class CountDAO extends BaseDAO[CountTable, Count]{
 
     override protected val tableQ = SlickTables.countQ
 
+    def countDetail(id: Long) : Future[(Option[Count], Seq[(String, CountDetailByProduct)])] = {
+        val detailQ = SlickTables.countDetailQ
+
+        val countDetails = for {
+            detail <- detailQ if detail.countId === id
+            product <- detail.product
+        } yield (product.product, detail)
+
+        findById(id).flatMap{count =>
+            db.run(countDetails.result).map{details =>
+
+                (count, details)
+            }
+        }
+
+    }
+
     def totalCaloriesPerCount : Future[Seq[CaloriesPerCount]] = {
         val detailQ = SlickTables.countDetailQ
         val productQ = SlickTables.productQ

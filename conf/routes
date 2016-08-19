@@ -13,6 +13,7 @@ GET     /compras/:id                controllers.PurchaseController.purchase(id: 
 GET     /conteos                    controllers.CountsController.counts
 GET     /conteos/nuevo              controllers.CountsController.newCount
 POST    /conteos/crear              controllers.CountsController.createCount
+GET     /conteos/:id                controllers.CountsController.count(id: Long)
 
 # STATISTICS
 GET     /finanzas                   controllers.ChartsController.finances
