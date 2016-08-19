@@ -13,6 +13,8 @@ import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 
 import scala.concurrent.ExecutionContext
+import play.api.libs.json._
+import implicits.JsonWrites.productWithStockWrites
 
 @Singleton
 class ProductsController @Inject()(productDAO: ProductDAO, stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
@@ -59,4 +61,9 @@ class ProductsController @Inject()(productDAO: ProductDAO, stockDAO: StockDAO)(i
         )
     }
 
+    def productsWithStock = Action.async { implicit request =>
+        stockDAO.getLastWithPositiveStock.map{ products =>
+            Ok(Json.toJson(products))
+        }
+    }
 }
