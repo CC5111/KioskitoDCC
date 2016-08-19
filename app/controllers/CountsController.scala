@@ -6,7 +6,7 @@ import play.api.mvc._
 import models.daos._
 import javax.inject.{Inject, Singleton}
 
-import models.entities.{CaloriesPerCount, Count, CountDetailByProduct}
+import models.entities._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.Play.current
@@ -15,36 +15,11 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import scala.concurrent.{ExecutionContext, Future}
+import implicits.JsonReads.{countDetailsReads, countDetailByProductReads}
+import implicits.JsonWrites.{caloriesPerCountReads}
 
 @Singleton
 class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetailByProductDAO, stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
-
-    case class CountDetails(countId: Long, countDetails: Seq[CountDetailByProduct])
-
-    implicit val placeWrites: Writes[CaloriesPerCount] = (
-            (JsPath \ "date").write[java.sql.Timestamp] and
-            (JsPath \ "totalCalories").write[Option[Int]]
-        )(unlift(CaloriesPerCount.unapply))
-
-    val countsForm = Form(
-        mapping (
-            "countId" -> longNumber,
-            "countDetails" -> seq(
-                mapping(
-                    "id" -> longNumber,
-                    "productId" -> longNumber,
-                    "remainingQuantity" -> number,
-                    "soldQuantity" -> number,
-                    "salePrice" -> number
-                )({
-                    case (id, productId, remaining, sold, salePrice) => CountDetailByProduct(id, 0, productId, remaining, sold, salePrice)
-                })
-                ({
-                    case detail : CountDetailByProduct => Some((detail.id, detail.productId, detail.quantity, detail.soldQuantity, detail.sellingPrice))
-                })
-            )
-        )(CountDetails.apply)(CountDetails.unapply)
-    )
 
     def counts() = Action.async(implicit request =>
         countDetailDAO.getCountsWithEarnings().map { counts =>
@@ -54,27 +29,43 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
 
     def newCount() = Action.async(implicit request =>
         stockDAO.getLastWithPositiveStock.map { stocks =>
-            Ok(views.html.new_count(stocks.toList))
+            Ok(views.html.new_count())
         }
     )
 
-    def createCounts = Action.async(implicit request =>
-        countsForm.bindFromRequest().fold (
-            formWithErrors => {
-                Future(Redirect(routes.CountsController.counts()))
+
+    def createCount = Action.async(BodyParsers.parse.json) { implicit request =>
+        println(request.body)
+        val countResult = request.body.validate[CountDetails]
+
+        println(countResult)
+        countResult.fold (
+            errors => {
+                Future(BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors))))
             },
+
             countDetails => {
                 val calendar = Calendar.getInstance()
                 val currentDate = calendar.getTime
-                countDAO.insert(Count(countDetails.countId, new Timestamp(currentDate.getTime), 0))
+                val currentTimestamp: Timestamp = new Timestamp(currentDate.getTime)
 
-                countDetails.countDetails.map(countDetail => countDetailDAO.insert(countDetail.copy(countId = countDetails.countId)))
+                countDAO.insert(Count(0, currentTimestamp, countDetails.actualEarnings)).map {
+                    insertedCountId =>
+                        countDetails.countDetails.map(
+                            countDetail => {
+                                countDetailDAO.insert(CountDetailByProduct(0, insertedCountId, countDetail.productId,
+                                    countDetail.remainingQuantity, countDetail.soldQuantity, countDetail.salePrice))
+                                stockDAO.insert(Stock(0, countDetail.productId, countDetail.remainingQuantity, currentTimestamp))
+                            }
+                        )
+                }
 
-                Future(Redirect(routes.CountsController.counts()))
+                Future(Ok(Json.obj("status" ->"OK", "message" -> ("Count '"+ countDetails +"' saved.") )))
 
             }
+
         )
-    )
+    }
 
     def countsTotalCalories = Action.async{ implicit request =>
             countDAO.totalCaloriesPerCount.map{calories =>

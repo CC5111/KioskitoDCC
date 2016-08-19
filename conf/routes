@@ -11,7 +11,7 @@ POST    /compras/crear              controllers.PurchaseController.createPurchas
 
 GET     /conteos                    controllers.CountsController.counts
 GET     /conteos/nuevo              controllers.CountsController.newCount
-
+POST    /conteos/crear              controllers.CountsController.createCount
 
 # STATISTICS
 GET     /finanzas                   controllers.ChartsController.finances
@@ -21,6 +21,7 @@ GET     /calsConsumidas             controllers.ChartsController.consCalories
 
 # JSON
 GET     /getProductsNames           controllers.NewPurchaseController.getProductsNames
+GET     /get-products-with-stock    controllers.ProductsController.productsWithStock
 GET     /calories-per-count         controllers.CountsController.countsTotalCalories
 
 # An example controller showing how to write asynchronous code
