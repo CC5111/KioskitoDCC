@@ -103,7 +103,7 @@ app.controller('newCountCtrl', function ($scope, $http) {
         console.log(JSON.stringify($scope.form));
         console.log($scope.form);
 
-        $http.post('/compras/crear', $scope.form).success(function () {/*success callback*/
+        $http.post('/conteos/crear', $scope.form).success(function () {/*success callback*/
         });
     };
 });
