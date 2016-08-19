@@ -249,15 +249,7 @@ app.controller('soldProductsChartCtrl', function ($scope) {
                     return d3.format(',f')(d);
                 }
             },
-            zoom: {
-                enabled: false,
-                scaleExtent: [1, 10],
-                useFixedDomain: false,
-                useNiceScale: false,
-                horizontalOff: false,
-                verticalOff: true,
-                unzoomEventType: 'dblclick.zoom'
-            }
+
         },
         title: {
             enable: true,
