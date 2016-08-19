@@ -88,13 +88,18 @@ class PurchaseDAO extends BaseDAO[PurchaseTable, Purchase]{
         db.run(query.result)
     }
 
-    def purchaseDetail(id: Long) : Future[(Option[Purchase], Seq[PurchaseDetailByProduct])] = {
+    def purchaseDetail(id: Long) : Future[(Option[Purchase], Seq[(String, PurchaseDetailByProduct)])] = {
         val detailQ = SlickTables.purchaseDetailQ
+        val productQ = SlickTables.productQ
 
-        val purchaseDetails = detailQ.filter(_.purchaseId === id)
+        val purchaseDetails = for {
+            detail <- detailQ if detail.purchaseId === id
+            product <- detail.product
+        } yield (product.product, detail)
 
         findById(id).flatMap{purchase =>
             db.run(purchaseDetails.result).map{details =>
+
                 (purchase, details)
             }
         }
