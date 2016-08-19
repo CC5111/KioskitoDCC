@@ -83,7 +83,8 @@ app.controller('newCountCtrl', function ($scope, $http) {
                 soldQuantity: 0,
                 salePrice: product.salePrice
             });
-        };
+        }
+        ;
         $scope.updateExpectedEarnings = function (index) {
             var p = $scope.form.countDetails[index]
             p.soldQuantity = p.previousStock - p.remainingQuantity;
@@ -108,20 +109,24 @@ app.controller('newCountCtrl', function ($scope, $http) {
     };
 });
 
-app.controller('expectedVsActualChartCtrl', function($scope, $http){
+app.controller('expectedVsActualChartCtrl', function ($scope, $http) {
     $scope.options = {
         chart: {
             type: 'multiBarChart',
             height: 450,
-            margin : {
+            margin: {
                 top: 20,
                 right: 20,
                 bottom: 45,
                 left: 45
             },
             clipEdge: true,
-            x: function(d){return d[0];},
-            y: function(d){return d[1];},
+            x: function (d) {
+                return d[0];
+            },
+            y: function (d) {
+                return d[1];
+            },
 
             showControls: false,
             stacked: false,
@@ -129,14 +134,14 @@ app.controller('expectedVsActualChartCtrl', function($scope, $http){
             xAxis: {
                 axisLabel: 'Fecha conteo',
                 showMaxMin: false,
-                tickFormat: function(d){
+                tickFormat: function (d) {
                     return d3.time.format('%x')(new Date(d))
                 }
             },
             yAxis: {
                 axisLabel: '$',
                 axisLabelDistance: -20,
-                tickFormat: function(d){
+                tickFormat: function (d) {
                     return d3.format(',.1f')(d);
                 }
             }
@@ -148,15 +153,11 @@ app.controller('expectedVsActualChartCtrl', function($scope, $http){
 
 
     $http.get('/actual-expected-earnings').success(function (data) {
-            for (var i = 0; i < data.length; i++) {
-                actualEarningsData.push([data[i].date, data[i].actual]);
-                expectedEarningsData.push([data[i].date, data[i].expected]);
-            }
-            console.log(JSON.stringify(data));
-            console.log(data);
-        });
-
-
+        for (var i = 0; i < data.length; i++) {
+            actualEarningsData.push([data[i].date, data[i].actual]);
+            expectedEarningsData.push([data[i].date, data[i].expected]);
+        }
+    });
 
     $scope.data = [
 
@@ -172,7 +173,7 @@ app.controller('expectedVsActualChartCtrl', function($scope, $http){
 
 });
 
-app.controller('lossRatioChartCtrl', function($scope, $http) {
+app.controller('lossRatioChartCtrl', function ($scope, $http) {
 
 })
 
@@ -223,7 +224,6 @@ app.controller('soldProductsChartCtrl', function ($scope) {
     };
 
 
-
     $scope.data = [
         {
             "key": "Super 8",
@@ -264,7 +264,7 @@ app.controller('soldProductsChartCtrl', function ($scope) {
 
 });
 
-app.controller('totalConsCaloriesChartCtrl', function($scope, $http){
+app.controller('totalConsCaloriesChartCtrl', function ($scope, $http) {
     $scope.options = {
         chart: {
             type: 'lineChart',
@@ -291,7 +291,7 @@ app.controller('totalConsCaloriesChartCtrl', function($scope, $http){
                     return d3.time.format('%x')(new Date(d))
                 },
                 showMaxMin: true,
-                ticks:10,
+                ticks: 10,
                 tickPadding: 10
 
             },

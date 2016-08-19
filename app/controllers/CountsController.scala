@@ -84,9 +84,9 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
             countDetailDAO.getCountsWithEarnings().map{ data =>
                 val json = data.map{
                     d => Json.obj(
-                        "date" -> d._1,
-                        "actual" -> d._2,
-                        "expected" -> d._3
+                        "date" -> d._2,
+                        "actual" -> d._3,
+                        "expected" -> d._4
                     )
                 }
                 Ok(Json.toJson(json))

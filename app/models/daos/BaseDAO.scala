@@ -171,7 +171,6 @@ class CountDetailByProductDAO extends BaseDAO[CountDetailByProductTable, CountDe
                 case (dateAndActualEarn, countDetail) => (dateAndActualEarn._2, dateAndActualEarn._1, dateAndActualEarn._3, countDetail.map(x => x._2.soldQuantity * x._2.sellingPrice).sum)
             }
 
-        println(query.result.statements: Iterable[String])
         db.run(query.result)
     }
 }
