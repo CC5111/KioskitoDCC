@@ -88,6 +88,18 @@ class PurchaseDAO extends BaseDAO[PurchaseTable, Purchase]{
         db.run(query.result)
     }
 
+    def productDetail(id: Long) : Future[(Option[Purchase], Seq[PurchaseDetailByProduct])] = {
+        val detailQ = SlickTables.purchaseDetailQ
+
+        val purchaseDetails = detailQ.filter(_.purchaseId === id)
+
+        findById(id).flatMap{purchase =>
+            db.run(purchaseDetails.result).map{details =>
+                (purchase, details)
+            }
+        }
+
+    }
 
 }
 
