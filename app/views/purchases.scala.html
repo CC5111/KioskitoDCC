@@ -1,4 +1,4 @@
-@(purchases: List[(Long, java.sql.Timestamp, Option[Int])])(implicit msg: play.api.i18n.Messages)
+@(purchases: List[models.entities.PurchaseTotalCost])(implicit msg: play.api.i18n.Messages)
 
 
 @main("Compras", 2) {
@@ -14,8 +14,8 @@
   <tbody>
   @for(purchase <- purchases) {
   <tr>
-    <td><a href="/compras/@purchase._1">@purchase._2</a></td>
-    <td>@purchase._3</td>
+    <td><a href="/compras/@purchase.id">@purchase.date</a></td>
+    <td>@purchase.totalCost</td>
   </tr>
   }
   </tbody>

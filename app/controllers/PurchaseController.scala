@@ -24,8 +24,11 @@ class PurchaseController @Inject()(purchaseDAO: PurchaseDAO, productDAO: Product
                                    stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
 
     def purchases() = Action.async{ implicit request =>
-        purchaseDAO.getPeriodsTotalCost.map{ purchases =>
-            Ok(views.html.purchases(purchases.toList))
+        purchaseDAO.getPeriodsTotalCost.map{ p => {
+              val purchases = p.map(x => PurchaseTotalCost(x._1, x._2, x._3))
+
+              Ok(views.html.purchases(purchases.toList))
+            }
         }
     }
 
