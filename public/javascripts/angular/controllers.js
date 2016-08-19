@@ -66,7 +66,7 @@ app.controller('soldProductsChartCtrl', function($scope) {
 
 });
 
-app.controller('totalConsCaloriesChartCtrl', function($scope){
+app.controller('totalConsCaloriesChartCtrl', function($scope, $http){
     $scope.options = {
         chart: {
             type: 'lineChart',
@@ -106,17 +106,25 @@ app.controller('totalConsCaloriesChartCtrl', function($scope){
             enable: true,
             text: 'Total de calorías consumidas entre fechas'
         }
-    }
+    };
+
+    var totalCalories = [];
+
+    $http.get('/calories-per-count').success(function (data) {
+        for (var i = 0; i < data.length; i++) {
+            totalCalories.push([data[i].date, data[i].totalCalories]);
+        }
+    });
 
     $scope.data = [
         {
             "key" : "Calorías" ,
-            "values" : [ [ 1025409600000 , 23.041422681023] , [ 1028088000000 , 19.854291255832] , [ 1030766400000 , 21.02286281168] , [ 1033358400000 , 22.093608385173] , [ 1036040400000 , 25.108079299458] , [ 1038632400000 , 26.982389242348] , [ 1041310800000 , 19.828984957662]]
+            "values" : totalCalories
         }
     ]
 });
 
-app.controller('detailedConsCaloriesChartCtrl', function($scope) {
+app.controller('detailedConsCaloriesChartCtrl', function($scope, $http) {
     $scope.options = {
         chart: {
             type: 'stackedAreaChart',
@@ -163,6 +171,8 @@ app.controller('detailedConsCaloriesChartCtrl', function($scope) {
             text: 'Productos que más calorías aportan al consumo'
         }
     };
+
+
 
     $scope.data = [
         {
