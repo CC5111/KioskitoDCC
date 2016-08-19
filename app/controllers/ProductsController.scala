@@ -22,8 +22,8 @@ class ProductsController @Inject()(productDAO: ProductDAO, stockDAO: StockDAO)(i
     val productForm = Form(
         mapping(
             "id" -> longNumber,
-            "producto" -> nonEmptyText,
-            "calorias" -> number
+            "Nombre producto" -> nonEmptyText,
+            "Calorías" -> number
         )({
             case (id, producto, calorias) => Product(id, producto, calorias, 0)
         })({
