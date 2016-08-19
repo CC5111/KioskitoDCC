@@ -1,4 +1,4 @@
-@(periods: List[(Long, java.sql.Timestamp, Option[Int])])(implicit msg: play.api.i18n.Messages)
+@(purchases: List[(Long, java.sql.Timestamp, Option[Int])])(implicit msg: play.api.i18n.Messages)
 
 
 @main("Compras", 2) {
@@ -12,9 +12,9 @@
   <th>Gasto</th>
   </thead>
   <tbody>
-  @for(period <- periods) {
+  @for(purchase <- purchases) {
   <tr>
-    <td><a href="/compras/@period._1">@period._2</a></td>
+    <td><a href="/compras/@purchase._1">@purchase._2</a></td>
     <td>@period._3</td>
   </tr>
   }
