@@ -82,8 +82,10 @@ class CountsController @Inject()(countDAO: CountDAO, countDetailDAO: CountDetail
         }
 
     def dateActualExpEarnings = Action.async{ implicit request =>
-            countDetailDAO.getCountsWithEarnings().map{ data =>
-                val json = data.map{
+        countDetailDAO.getCountsWithEarnings().map{ data =>
+            val sorted = data.sortBy(_._2.getTime)
+
+            val json = sorted.map{
                     d => Json.obj(
                         "date" -> d._2,
                         "actual" -> d._3,
