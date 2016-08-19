@@ -6,7 +6,7 @@ import play.api.mvc._
 import models.daos._
 import javax.inject.{Inject, Singleton}
 
-import models.entities.{Product, Purchase, PurchaseDetailByProduct}
+import models.entities._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.Play.current
@@ -16,29 +16,12 @@ import scala.concurrent.{ExecutionContext, Future}
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
+import implicits.JsonReads.{shoppingListReads}
+import implicits.JsonWrites.caloriesPerCountReads
+
 @Singleton
 class PurchaseController @Inject()(periodDAO: PurchaseDAO, productDAO: ProductDAO, purchaseDetailDAO: ProductDetailByPeriodDAO,
                                    stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
-
-    case class ShoppingList(purchaseId: Long, products: Seq[PurchasedProduct])
-    case class PurchasedProduct(id: Long, productId: Long, packages: Int, quantityPerPackage: Int,
-                                pricePerPackage: Int, salePrice: Int)
-
-    implicit val purchasedProductReads: Reads[PurchasedProduct] = (
-            (JsPath \ "id").read[Long] and
-            (JsPath \ "productId").read[Long] and
-            (JsPath \ "packages").read[Int] and
-            (JsPath \ "quantityPerPackage").read[Int] and
-            (JsPath \ "pricePerPackage").read[Int] and
-            (JsPath \ "salePrice").read[Int]
-        )(PurchasedProduct.apply _)
-
-    implicit val shoppingListReads: Reads[ShoppingList] = (
-            (JsPath \ "purchaseId").read[Long] and
-            (JsPath \ "products").read[Seq[PurchasedProduct]]
-        )(ShoppingList.apply _)
-
-
 
     val purchaseForm = Form(
         mapping(
