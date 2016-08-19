@@ -1,0 +1,10 @@
+@(purchaseDetail: (Option[models.entities.Purchase], Seq[models.entities.PurchaseDetailByProduct]))(implicit msg: play.api.i18n.Messages)
+
+
+@main("Detalle Compra", 2) {
+    <p> @for(purchase <- purchaseDetail._1) {
+        Fecha:  @purchase.date
+        }
+    </p>
+
+}
