@@ -2,9 +2,11 @@
 
 
 @main("Finanzas", 4) {
-    <div ng-controller="financesChartCtrl">
-        <h1>Finanzas</h1>
-        <div>
+    <div>
+        <div ng-controller="expectedVsActualChartCtrl">
+            <nvd3 options="options" data="data"></nvd3>
+        </div>
+        <div ng-controller="lossRatioChartCtrl">
             <nvd3 options="options" data="data"></nvd3>
         </div>
     </div>

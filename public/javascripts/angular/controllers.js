@@ -58,11 +58,109 @@ app.controller('newPurchaseCtrl', function($scope, $http){
         };
 });
 
-app.controller('financesChartCtrl', function($scope){
+app.controller('expectedVsActualChartCtrl', function($scope){
+    $scope.options = {
+        chart: {
+            type: 'multiBarChart',
+            height: 450,
+            margin : {
+                top: 20,
+                right: 20,
+                bottom: 45,
+                left: 45
+            },
+            clipEdge: true,
+            x: function(d){return d[0];},
+            y: function(d){return d[1];},
+
+            showControls: false,
+            stacked: false,
+            duration: 500,
+            xAxis: {
+                axisLabel: 'Fecha conteo',
+                showMaxMin: false,
+                tickFormat: function(d){
+                    return d3.time.format('%x')(new Date(d))
+                }
+            },
+            yAxis: {
+                axisLabel: '$',
+                axisLabelDistance: -20,
+                tickFormat: function(d){
+                    return d3.format(',.1f')(d);
+                }
+            }
+        }
+    };
+
+    $scope.data = [
+        {
+            key: 'Esperado',
+            values:[[1028088000000,1], [1028088085588,1], [1028098085588,6]]
+        },
+        {
+            key: 'Real',
+            values: [[1028088000000,3], [1028088085588,5], [1028098085588,5]]
+        }
+    ];
+
+});
+
+app.controller('lossRatioChartCtrl', function($scope, $http) {
+    $scope.options = {
+        chart: {
+            type: 'lineChart',
+            height: 450,
+            margin : {
+                top: 20,
+                right: 20,
+                bottom: 50,
+                left: 60
+            },
+            x: function(d){return d[0];},
+            y: function(d){return d[1];},
+            useInteractiveGuideline: true,
+            showLegend: false,
+            xAxis: {
+                axisLabel: 'Fecha',
+                tickFormat: function(d) {
+                    return d3.time.format('%x')(new Date(d))
+                },
+                showMaxMin: false
+            },
+            yAxis: {
+                axisLabel: 'Calorías',
+                tickFormat: function(d){
+                    return d3.format('.02f')(d);
+                },
+                showMaxMin: false
+            }
+        },
+        title: {
+            enable: true,
+            text: 'Total de calorías consumidas entre fechas'
+        }
+    };
+
+    var totalCalories = [];
+
+    $http.get('/calories-per-count').success(function (data) {
+        for (var i = 0; i < data.length; i++) {
+            totalCalories.push([data[i].date, data[i].totalCalories]);
+        }
+    });
+
+    $scope.data = [
+        {
+            "key" : "Calorías" ,
+            "values" : totalCalories
+        }
+    ]
 
 });
 
 app.controller('soldProductsChartCtrl', function($scope) {
+
 
 });
 
