@@ -23,22 +23,6 @@ import implicits.JsonWrites.caloriesPerCountReads
 class PurchaseController @Inject()(periodDAO: PurchaseDAO, productDAO: ProductDAO, purchaseDetailDAO: ProductDetailByPeriodDAO,
                                    stockDAO: StockDAO)(implicit ec: ExecutionContext) extends Controller{
 
-    val purchaseForm = Form(
-        mapping(
-            "purchaseId" -> longNumber,
-            "products" -> seq(
-                mapping(
-                    "id" -> longNumber,
-                    "productId" -> longNumber,
-                    "packages" -> number,
-                    "quantityPerPackage" -> number,
-                    "pricePerPackage" -> number,
-                    "salePrice" -> number
-                )(PurchasedProduct.apply)(PurchasedProduct.unapply)
-            )
-        )(ShoppingList.apply)(ShoppingList.unapply)
-    )
-
     def purchases() = Action.async{ implicit request =>
         periodDAO.getPeriodsTotalCost.map{ purchases =>
             Ok(views.html.purchases(purchases.toList))
@@ -79,5 +63,11 @@ class PurchaseController @Inject()(periodDAO: PurchaseDAO, productDAO: ProductDA
             }
         )
 
+    }
+
+    def purchase(id: Long) = Action.async{ implicit request =>
+        periodDAO.productDetail(id).map{purchaseDetail =>
+            Ok(views.html.purchase(purchaseDetail))
+        }
     }
 }

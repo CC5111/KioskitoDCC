@@ -14,7 +14,8 @@
                             <th>Paquetes</th>
                             <th>Cant/Paquete</th>
                             <th>Precio/Paquete</th>
-                            <th>P. Venta</th>
+                            <th>Precio Unidad</th>
+                            <th>Precio Venta</th>
                             <th>
                                 <button type="button" class="btn btn-sm btn-primary" ng-click="newProduct()">
                                     <span class="glyphicon glyphicon-plus-sign"></span>
@@ -29,6 +30,7 @@
                             <td><input class="form-control input-sm" type="number" ng-model="product.packages"></td>
                             <td><input class="form-control input-sm" type="number" ng-model="product.quantityPerPackage"></td>
                             <td><input class="form-control input-sm" type="number" ng-model="product.pricePerPackage"></td>
+                            <td>{{ product.pricePerPackage/product.quantityPerPackage | number }}</td>
                             <td><input class="form-control input-sm" type="number" ng-model="product.salePrice"></td>
                             <td>
                                 <button type="button" class="btn btn-sm btn-danger" ng-click="removeProduct($index)">
